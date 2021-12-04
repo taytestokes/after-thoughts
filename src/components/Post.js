@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const Post = ({ post }) => {
   return (
-    <div className="w-full border border-gray-700 rounded-md p-4 mb-4">
+    <div className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-4 mb-4">
       <h3 className="text-2xl font-bold">{post.data.title}</h3>
       <p className="mt-2 text-gray-400">{post.data.excerpt}</p>
       <div className="w-full flex items-center justify-between mt-2">
