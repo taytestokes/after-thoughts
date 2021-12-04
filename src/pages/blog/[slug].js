@@ -1,19 +1,17 @@
-import React from 'react'
-
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 import { marked } from 'marked'
 
+import { Layout } from '../../components/Layout'
+
 export default function PostPage({ content, data, slug }) {
   return (
-    <div className="w-screen min-h-screen flex flex-col bg-gray-900 text-white">
-      <div className="h-2 bg-gradient-to-r from-violet-500  to-pink-500" />
-
+    <Layout>
       <div className="container mt-8 px-2 mx-auto">
         <div dangerouslySetInnerHTML={{ __html: marked(content) }} />
       </div>
-    </div>
+    </Layout>
   )
 }
 
