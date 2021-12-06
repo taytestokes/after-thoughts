@@ -5,12 +5,15 @@ import { marked } from 'marked'
 
 import { Layout } from '../../components/Layout'
 
-export default function PostPage({ content, data, slug }) {
+export default function PostPage({ content, data }) {
   return (
     <Layout>
-      <div className="container mt-8 px-2 mx-auto">
-        <div dangerouslySetInnerHTML={{ __html: marked(content) }} />
-      </div>
+      <h1 className="text-4xl font-bold">{data.title}</h1>
+      <h2 className="mt-4">{data.date}</h2>
+      <div
+        className="w-full mt-8 text-gray-700 dark:text-gray-200 "
+        dangerouslySetInnerHTML={{ __html: marked(content) }}
+      />
     </Layout>
   )
 }
