@@ -8,7 +8,7 @@ export const Layout = ({ children }) => {
     <div className="w-screen min-h-screen flex flex-col dark:bg-gray-900 dark:text-white">
       <Header />
 
-      <div className="container flex flex-col flex-grow items-center mx-auto px-2">
+      <div className="container flex flex-col flex-grow items-center mx-auto px-4">
         {typeof children === 'function' ? children() : children}
       </div>
 
