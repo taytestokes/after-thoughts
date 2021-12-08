@@ -8,15 +8,7 @@ import { Layout } from '../components/Layout'
 export default function Home({ blogPosts }) {
   return (
     <Layout>
-      <div className="w-full">
-        <h1 className="text-4xl font-bold">After Thoughts</h1>
-        <p className="mt-4 text-gray-400">
-          A personal software engineering blog that is used to document my explorations and
-          learnings in this digital world.
-        </p>
-      </div>
-
-      <div className="w-full flex flex-col flex-grow mt-8">
+      <div className="w-full flex flex-col flex-grow">
         {blogPosts.map((post) => (
           <Post key={post?.data?.date} post={post} />
         ))}

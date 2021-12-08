@@ -10,10 +10,7 @@ export default function PostPage({ content, data }) {
     <Layout>
       <h1 className="text-4xl font-bold">{data.title}</h1>
       <h2 className="mt-4">{data.date}</h2>
-      <div
-        className="w-full mt-8 text-gray-700 dark:text-gray-200 "
-        dangerouslySetInnerHTML={{ __html: marked(content) }}
-      />
+      <div className="markdown" dangerouslySetInnerHTML={{ __html: marked(content) }} />
     </Layout>
   )
 }

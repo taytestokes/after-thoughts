@@ -1,5 +1,5 @@
-// Tailwind Styles
-import 'tailwindcss/tailwind.css'
+// Tailwind Styles and Custom Classes
+import '../styles/main.css'
 
 // Theme Provider
 import { ThemeProvider } from '../context/Theme'
