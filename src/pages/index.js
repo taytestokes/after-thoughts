@@ -4,11 +4,14 @@ import matter from 'gray-matter'
 
 import { Post } from '../components/Post'
 import { Layout } from '../components/Layout'
+import { Timeline } from '../components/Timeline'
 
-export default function Home({ blogPosts }) {
+export default function Home({ blogPosts, timelineEvents }) {
   return (
     <Layout>
-      <div className="w-full flex flex-col flex-grow">
+      <Timeline data={timelineEvents} />
+
+      <div className="w-full flex flex-col flex-grow mt-8">
         {blogPosts.map((post) => (
           <Post key={post?.data?.date} post={post} />
         ))}
@@ -28,9 +31,12 @@ export async function getStaticProps() {
     }
   })
 
+  const timelineEvents = JSON.parse(fs.readFileSync(path.join('data', 'timeline.json'), 'utf-8'))
+
   return {
     props: {
       blogPosts,
+      timelineEvents,
     },
   }
 }
