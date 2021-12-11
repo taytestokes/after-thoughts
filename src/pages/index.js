@@ -1,19 +1,20 @@
-import fs from 'fs'
-import path from 'path'
-import matter from 'gray-matter'
+
+import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 
 import { Post } from '../components/Post'
 import { Layout } from '../components/Layout'
-import { Timeline } from '../components/Timeline'
 
-export default function Home({ blogPosts, timelineEvents }) {
+export const client = new ApolloClient({
+  uri: "https://after-thoughts.herokuapp.com/graphql",
+  cache: new InMemoryCache(),
+})
+
+export default function Home({ posts }) {
   return (
     <Layout>
-      <Timeline data={timelineEvents} />
-
       <div className="w-full flex flex-col flex-grow mt-8">
-        {blogPosts.map((post) => (
-          <Post key={post?.data?.date} post={post} />
+        {posts?.data?.map((post, index) => (
+          <Post key={index} post={post} />
         ))}
       </div>
     </Layout>
@@ -21,22 +22,29 @@ export default function Home({ blogPosts, timelineEvents }) {
 }
 
 export async function getStaticProps() {
-  const blogFolders = fs.readdirSync(path.join('blog'))
-  const blogPosts = blogFolders.map((folderName) => {
-    const { data } = matter(fs.readFileSync(path.join('blog', folderName, 'index.md'), 'utf-8'))
-
-    return {
-      slug: folderName,
-      data,
-    }
+  const { data } = await client.query({
+    query: gql`
+      query GetPosts {
+        posts {
+          data {
+            attributes {
+              title
+              content
+              views
+              author
+              excerpt
+              publishedAt
+              slug
+            }
+          }
+        }
+      }
+    `
   })
-
-  const timelineEvents = JSON.parse(fs.readFileSync(path.join('data', 'timeline.json'), 'utf-8'))
 
   return {
     props: {
-      blogPosts,
-      timelineEvents,
+      posts: data.posts
     },
   }
 }

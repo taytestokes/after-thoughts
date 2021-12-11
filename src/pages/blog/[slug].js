@@ -1,27 +1,45 @@
-import fs from 'fs'
-import path from 'path'
-import matter from 'gray-matter'
 import { marked } from 'marked'
+import { gql } from "@apollo/client";
 
 import { Layout } from '../../components/Layout'
 
-export default function PostPage({ content, data }) {
+import { client } from '..'
+
+export default function PostPage({ post }) {
   return (
     <Layout>
-      <h1 className="text-4xl font-bold">{data.title}</h1>
-      <h2 className="mt-4">{data.date}</h2>
-      <div className="markdown" dangerouslySetInnerHTML={{ __html: marked(content) }} />
+      <h1 className="text-4xl font-bold">{post.attributes.title}</h1>
+      <h2 className="mt-4">{post.attributes.publishedAt}</h2>
+      <div className="markdown" dangerouslySetInnerHTML={{ __html: marked(post.attributes.content) }} />
     </Layout>
   )
 }
 
+
+/**
+ * Generate each static blog post page for each
+ * slug.
+ */
 export async function getStaticPaths() {
-  const blogFolders = fs.readdirSync(path.join('blog'))
-  const paths = blogFolders.map((folderName) => {
+  const { data } = await client.query({
+    query: gql`
+      query GetPostSlugs {
+        posts {
+          data {
+            attributes {
+              slug
+            }
+          }
+        }
+      }   
+    `
+  })
+
+  const paths = data?.posts?.data.map(post => {
     return {
       params: {
-        slug: folderName,
-      },
+        slug: post.attributes.slug
+      }
     }
   })
 
@@ -31,14 +49,40 @@ export async function getStaticPaths() {
   }
 }
 
+/**
+ * Get the blog post from the database for the current static blog post page
+ * using it's slug value.
+ */
 export async function getStaticProps({ params: { slug } }) {
-  const { data, content } = matter(fs.readFileSync(path.join('blog', slug, 'index.md'), 'utf-8'))
+  const { data } = await client.query({
+    query: gql`
+      query GetPostBySlug($filters: PostFiltersInput) {
+        posts(filters: $filters) {
+          data {
+            attributes {
+              title
+              date
+              content
+              views
+              author
+              publishedAt
+            }
+          }
+        }
+      }
+    `,
+    variables: {
+      filters: {
+        slug: {
+          eq: slug
+        }
+      }
+    }
+  })
 
   return {
     props: {
-      content,
-      data,
-      slug,
+      post: data?.posts?.data[0]
     },
   }
 }
