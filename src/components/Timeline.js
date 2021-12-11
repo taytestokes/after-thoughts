@@ -14,6 +14,7 @@ export const Timeline = ({ data }) => {
               className={`w-full flex items-center ${
                 isEvenIndex ? 'flex-row' : 'flex-row-reverse'
               } justify-between`}
+              key={index}
             >
               <div className="w-5/12 order-1" />
               <div className="order-1" />
