@@ -1,11 +1,10 @@
-
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import { ApolloClient, InMemoryCache, gql } from '@apollo/client'
 
 import { Post } from '../components/Post'
 import { Layout } from '../components/Layout'
 
 export const client = new ApolloClient({
-  uri: "https://after-thoughts.herokuapp.com/graphql",
+  uri: 'https://after-thoughts.herokuapp.com/graphql',
   cache: new InMemoryCache(),
 })
 
@@ -39,12 +38,12 @@ export async function getStaticProps() {
           }
         }
       }
-    `
+    `,
   })
 
   return {
     props: {
-      posts: data.posts
+      posts: data.posts,
     },
   }
 }
