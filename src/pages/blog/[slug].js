@@ -3,7 +3,7 @@ import { gql } from '@apollo/client'
 
 import { Layout } from '../../components/Layout'
 
-import { apolloClient } from '../../config/apolloClient'
+import { apolloClient } from '../../config/ApolloClient'
 
 export default function PostPage({ post }) {
   return (

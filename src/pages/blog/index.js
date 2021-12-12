@@ -4,7 +4,7 @@ import { gql } from '@apollo/client'
 import { Layout } from '../../components/Layout'
 import { Post } from '../../components/Post'
 
-import { apolloClient } from '../../config/apolloClient'
+import { apolloClient } from '../../config/ApolloClient'
 
 export default function Blog({ posts }) {
   return (
