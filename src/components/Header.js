@@ -19,9 +19,7 @@ export const Header = () => {
         <Link href="/">
           <a
             className={`p-3 leading-none ${
-              router.pathname === '/'
-                ? 'text-gray-900 dark:text-white'
-                : 'text-gray-500 dark:text-gray-400'
+              router.pathname === '/' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-600'
             }  rounded-md hover:bg-gray-100 dark:hover:bg-gray-900`}
           >
             Home
@@ -31,8 +29,8 @@ export const Header = () => {
           <a
             className={`p-3 leading-none ${
               router.pathname.includes('/blog')
-                ? 'text-gray-900 dark:text-white'
-                : 'text-gray-600 dark:text-gray-400'
+                ? 'text-gray-900 dark:text-gray-100'
+                : 'text-gray-600'
             }  rounded-md hover:bg-gray-100 dark:hover:bg-gray-900`}
           >
             Blog
@@ -42,15 +40,15 @@ export const Header = () => {
           <a
             className={`p-3 leading-none ${
               router.pathname === '/work-journal'
-                ? 'text-gray-900 dark:text-white'
-                : 'text-gray-600 dark:text-gray-400'
+                ? 'text-gray-900 dark:text-gray-100'
+                : 'text-gray-600'
             }  rounded-md hover:bg-gray-100 dark:hover:bg-gray-900`}
           >
             Work Journal
           </a>
         </Link>
         <button
-          className="ml-auto p-3 rounded-md text-gray-900 dark:text-white fill-current hover:bg-gray-100 dark:hover:bg-gray-900"
+          className="ml-auto p-3 rounded-md text-gray-600 fill-current hover:bg-gray-100 dark:hover:bg-gray-900"
           onClick={toggleTheme}
         >
           {isDarkTheme ? <FiSun /> : <FiMoon />}

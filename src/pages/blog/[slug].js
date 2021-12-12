@@ -1,27 +1,29 @@
 import { marked } from 'marked'
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client'
 
 import { Layout } from '../../components/Layout'
 
-import { client } from '..'
+import { apolloClient } from '../../config/apolloClient'
 
 export default function PostPage({ post }) {
   return (
     <Layout>
       <h1 className="text-4xl font-bold">{post.attributes.title}</h1>
       <h2 className="mt-4">{post.attributes.publishedAt}</h2>
-      <div className="markdown" dangerouslySetInnerHTML={{ __html: marked(post.attributes.content) }} />
+      <div
+        className="markdown"
+        dangerouslySetInnerHTML={{ __html: marked(post.attributes.content) }}
+      />
     </Layout>
   )
 }
-
 
 /**
  * Generate each static blog post page for each
  * slug.
  */
 export async function getStaticPaths() {
-  const { data } = await client.query({
+  const { data } = await apolloClient.query({
     query: gql`
       query GetPostSlugs {
         posts {
@@ -31,15 +33,15 @@ export async function getStaticPaths() {
             }
           }
         }
-      }   
-    `
+      }
+    `,
   })
 
-  const paths = data?.posts?.data.map(post => {
+  const paths = data?.posts?.data.map((post) => {
     return {
       params: {
-        slug: post.attributes.slug
-      }
+        slug: post.attributes.slug,
+      },
     }
   })
 
@@ -54,7 +56,7 @@ export async function getStaticPaths() {
  * using it's slug value.
  */
 export async function getStaticProps({ params: { slug } }) {
-  const { data } = await client.query({
+  const { data } = await apolloClient.query({
     query: gql`
       query GetPostBySlug($filters: PostFiltersInput) {
         posts(filters: $filters) {
@@ -74,15 +76,15 @@ export async function getStaticProps({ params: { slug } }) {
     variables: {
       filters: {
         slug: {
-          eq: slug
-        }
-      }
-    }
+          eq: slug,
+        },
+      },
+    },
   })
 
   return {
     props: {
-      post: data?.posts?.data[0]
+      post: data?.posts?.data[0],
     },
   }
 }

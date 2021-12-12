@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom Classes */
+/* Markdown Syles */
 .markdown {
   @apply w-full leading-loose;
 }
@@ -13,4 +13,12 @@
 
 .markdown p {
   @apply text-gray-700 dark:text-gray-100 pb-6;
+}
+
+/* Dotted Background */
+.dotted-background {
+  background-image: radial-gradient(#e5e7eb 10%, transparent 10%),
+    radial-gradient(#e5e7eb 10%, transparent 10%);
+  background-position: 0 0, 10px 10px;
+  background-size: 20px 20px;
 }
