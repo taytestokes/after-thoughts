@@ -22,8 +22,8 @@ export default function Home() {
           <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100">Tayte Stokes</h1>
           <p className="text-gray-800 dark:text-gray-400">Software Engineer</p>
           <p className="text-gray-600 mt-4">
-            Hey! I'm Tayte. I'm a Software Engineer currently working at Podium. Welcome to my site
-            where you can follow my journey as a digital craftsman.
+            Hey! My name is Tayte. I am a Software Engineer currently working at Podium. Welcome to
+            my site where you can follow my journey as a digital craftsman.
           </p>
         </div>
       </div>
