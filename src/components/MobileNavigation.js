@@ -36,7 +36,7 @@ export const MobileNavigation = () => {
       </div>
 
       {showMobileNavigation ? (
-        <div className="md:hidden absolute top-full w-full h-screen px-4 pb-4 flex flex-col flex-grow items-center bg-white dark:bg-black space-y-2">
+        <div className="md:hidden z-20 absolute top-full w-full h-screen px-4 pb-4 flex flex-col flex-grow items-center bg-white dark:bg-black space-y-2">
           <Link href="/">
             <a
               className={`w-full flex flex-col items-center p-4 leading-none ${
