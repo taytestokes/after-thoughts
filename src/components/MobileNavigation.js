@@ -1,5 +1,5 @@
 import React from 'react'
-import { FiMenu } from 'react-icons/fi'
+import { FiMenu, FiX } from 'react-icons/fi'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
@@ -31,7 +31,7 @@ export const MobileNavigation = () => {
           className="ml-auto px-4 py-3 rounded-md text-gray-600 dark:text-gray-400 fill-current hover:bg-gray-100 dark:hover:bg-gray-900"
           onClick={toggleNavMenu}
         >
-          <FiMenu />
+          {showMobileNavigation ? <FiX /> : <FiMenu />}
         </button>
       </div>
 
