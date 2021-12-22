@@ -3,7 +3,7 @@ import React from 'react'
 export const Timeline = ({ data }) => {
   return (
     <div className="w-full">
-      <div className="relative h-full wrap overflow-hidden ">
+      <div className="relative h-full wrap overflow-hidden">
         <div className="absolute left-1/2 h-full border-l border-gray-300 dark:border-gray-700 translate-x-1/2"></div>
 
         {data?.events?.map((event, index) => {

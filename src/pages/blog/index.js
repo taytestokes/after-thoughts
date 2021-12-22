@@ -9,7 +9,7 @@ import { apolloClient } from '../../config/ApolloClient'
 export default function Blog({ posts }) {
   return (
     <Layout>
-      <div className="w-full flex flex-col flex-grow mt-8">
+      <div className="w-full flex flex-col flex-grow">
         {posts?.data?.map((post, index) => (
           <Post key={index} post={post} />
         ))}

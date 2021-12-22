@@ -10,6 +10,21 @@ export const ThemeProvider = ({ children }) => {
     setTheme(oppositeTheme)
   }
 
+  /**
+   * Adds background styles to the body element of
+   * the application.
+   *
+   * TODO: Find a better tailwind/next configuration for this
+   */
+  React.useEffect(() => {
+    const bodyElement = document.querySelector('body')
+    bodyElement.classList.add('dark:bg-black')
+  }, [])
+
+  /**
+   * Toggles the dark mode class on the html element of
+   * the application
+   */
   React.useEffect(() => {
     const htmlElement = document.querySelector('html')
 

@@ -1,18 +1,19 @@
 import React from 'react'
-import Link from 'next/link'
+import { useRouter } from 'next/router'
+import format from 'date-fns/format'
+import { FiCalendar } from 'react-icons/fi'
 
 export const Post = ({ post }) => {
+  const router = useRouter()
+  const publishedDate = format(new Date(post.attributes.publishedAt), 'MMMM dd, yyyy')
   return (
-    <div className="w-full border border-gray-300 dark:border-gray-700 rounded-md p-4 mb-4">
-      <h3 className="text-2xl font-bold">{post.attributes.title}</h3>
-      <p className="mt-2 text-gray-400">{post.attributes.excerpt}</p>
-      <div className="w-full flex items-center justify-between mt-2">
-        <p className="text-sm mt-2 text-gray-400">{post.attributes.publishedAt}</p>
+    <button
+      className="w-full text-left rounded-md"
+      onClick={() => router.push(`/blog/${post.attributes.slug}`)}
+    >
+      <p className="text-gray-900 dark:text-white text-2xl font-bold">{post.attributes.title}</p>
 
-        <Link href={`/blog/${post.attributes.slug}`}>
-          <a className="text-pink-500">Read More</a>
-        </Link>
-      </div>
-    </div>
+      <p className="mt-2 text-gray-600 dark:text-gray-400">{post.attributes.excerpt}</p>
+    </button>
   )
 }
