@@ -10,7 +10,7 @@ export const Header = () => {
   const isDarkTheme = theme === 'dark'
 
   return (
-    <header className="relative container mx-auto py-8 flex items-center">
+    <header className="relative p-8 flex items-center">
       <MobileNavigation />
       <DesktopNavigation />
       <button

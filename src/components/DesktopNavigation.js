@@ -1,12 +1,16 @@
 import React from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+
+import { LogoIcon } from '../components/LogoIcon'
 
 export const DesktopNavigation = () => {
   const router = useRouter()
 
   return (
     <div className="hidden md:flex items-center">
+      <LogoIcon />
       <Link href="/">
         <a
           className={`px-4 py-3 leading-none ${
