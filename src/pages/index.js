@@ -22,8 +22,8 @@ export default function Home() {
         <h1 className="font-bold text-4xl mt-4">Tayte Stokes</h1>
 
         <p className="mt-2 text-gray-600 dark:text-gray-400">
-          I'm a digital craftsmen focusing on web development. I'm currently employed and work full
-          time as a Software Engineer at Podium.
+          I am a digital craftsmen focusing on web development. I am currently employed and work
+          full time as a Software Engineer at Podium.
         </p>
 
         <div className="w-full flex items-center justify-center text-sm mt-8 space-x-4 text-gray-600 dark:text-gray-400">
