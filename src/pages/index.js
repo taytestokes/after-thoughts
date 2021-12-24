@@ -12,7 +12,8 @@ import profilePhoto from '../public/images/profile.jpeg'
 export default function Home() {
   return (
     <Layout>
-      <div className="w-full flex flex-col flex-grow items-center justify-center text-center p-2">
+      {/* Introduction Section */}
+      <div className="w-full flex flex-col flex-grow items-center justify-center text-center py-8">
         <div className="flex items-center rounded-full border-4 border-gray-200 dark:border-gray-800 ">
           <Image
             alt="Profile photo of Tayte Stokes"
@@ -53,7 +54,8 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="w-full flex flex-col p-2">
+      {/* Career Section */}
+      <div className="w-full flex flex-col py-8">
         <h1 className="font-bold text-4xl mt-4">Career</h1>
         <CareerCard
           companyName="Podium"

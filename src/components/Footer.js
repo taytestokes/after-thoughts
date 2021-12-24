@@ -9,6 +9,9 @@ export const Footer = () => {
         <LogoIcon size={16} />
         <p className="ml-1">taytestokes.io</p>
       </div>
+      <div>
+        <p>&copy; 2022 Tayte Stokes</p>
+      </div>
     </div>
   )
 }

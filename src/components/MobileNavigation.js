@@ -41,7 +41,7 @@ export const MobileNavigation = () => {
         <div className="z-10 fixed top-0 left-0 right-0 bottom-0 flex flex-col flex-grow bg-white dark:bg-black">
           <div className="h-2 bg-gray-100 dark:bg-gray-900" />
 
-          <div className="flex items-center p-8">
+          <div className="flex items-center py-8 px-2">
             <div className="px-4">
               <LogoIcon />
             </div>

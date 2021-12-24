@@ -8,7 +8,7 @@ import { DesktopNavigation } from './DesktopNavigation'
 
 export const Header = () => {
   return (
-    <header className="relative w-full flex items-center justify-between p-8">
+    <header className=" container mx-auto relative w-full flex items-center justify-between py-8 px-2">
       <Link href="/">
         <a className="px-4">
           <LogoIcon />
