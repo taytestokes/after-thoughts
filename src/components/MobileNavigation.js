@@ -2,7 +2,7 @@ import React from 'react'
 import { FiMenu, FiX } from 'react-icons/fi'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { LogoIcon } from './LogoIcon'
+import { LogoIcon } from './icons/LogoIcon'
 import { ThemeSwitcher } from './ThemeSwitcher'
 
 export const MobileNavigation = () => {

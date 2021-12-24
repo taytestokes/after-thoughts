@@ -1,5 +1,8 @@
 import Image from 'next/image'
 import { FiGithub, FiTwitter, FiLinkedin, FiCoffee } from 'react-icons/fi'
+import { PodiumIcon } from '../components/icons/PodiumIcon'
+import { DevMtnIcon } from '../components/icons/DevMtnIcon'
+import { MXIcon } from '../components/icons/MXIcon'
 
 import { Layout } from '../components/Layout'
 
@@ -46,6 +49,49 @@ export default function Home() {
             <FiTwitter className="mr-2" />
             Twitter
           </a>
+        </div>
+      </div>
+
+      <div className="w-full flex flex-col p-8">
+        <h1 className="font-bold text-4xl mt-4">Career</h1>
+
+        {/* Podium */}
+        <div className="w-full flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-md mt-4">
+          <PodiumIcon size={32} />
+          <div className="flex flex-col flex-grow px-4 leading-none">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-2xl">Podium</h3>
+              <p className="text-sm text-gray-600">2021 - Present</p>
+            </div>
+
+            <p className="text-sm text-gray-600">Software Engineer</p>
+          </div>
+        </div>
+
+        {/* MX */}
+        <div className="w-full flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-md mt-4">
+          <MXIcon size={32} />
+          <div className="flex flex-col flex-grow px-4 leading-none">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-2xl">MX</h3>
+              <p className="text-sm text-gray-600">2019 - 2021</p>
+            </div>
+
+            <p className="text-sm text-gray-600">Frontend Engineer</p>
+          </div>
+        </div>
+
+        {/* DevMtn */}
+        <div className="w-full flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-md mt-4">
+          <DevMtnIcon size={32} />
+          <div className="flex flex-col flex-grow px-4 leading-none">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-2xl">DevMtn</h3>
+              <p className="text-sm text-gray-600">2018 - 2019</p>
+            </div>
+
+            <p className="text-sm text-gray-600">Web Development Mentor</p>
+          </div>
         </div>
       </div>
     </Layout>

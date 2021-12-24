@@ -2,7 +2,7 @@ import React from 'react'
 
 import Link from 'next/link'
 
-import { LogoIcon } from './LogoIcon'
+import { LogoIcon } from './icons/LogoIcon'
 import { MobileNavigation } from './MobileNavigation'
 import { DesktopNavigation } from './DesktopNavigation'
 

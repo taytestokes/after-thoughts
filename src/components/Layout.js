@@ -14,7 +14,7 @@ export const Layout = ({ children }) => {
         {typeof children === 'function' ? children() : children}
       </div>
 
-      {/* <Footer /> */}
+      <Footer />
     </div>
   )
 }
