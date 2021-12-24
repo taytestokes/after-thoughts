@@ -5,13 +5,14 @@ import { DevMtnIcon } from '../components/icons/DevMtnIcon'
 import { MXIcon } from '../components/icons/MXIcon'
 
 import { Layout } from '../components/Layout'
+import { CareerCard } from '../components/CareerCard'
 
 import profilePhoto from '../public/images/profile.jpeg'
 
 export default function Home() {
   return (
     <Layout>
-      <div className="w-full flex flex-col flex-grow items-center justify-center text-center p-8">
+      <div className="w-full flex flex-col flex-grow items-center justify-center text-center p-2">
         <div className="flex items-center rounded-full border-4 border-gray-200 dark:border-gray-800 ">
           <Image
             alt="Profile photo of Tayte Stokes"
@@ -52,47 +53,43 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="w-full flex flex-col p-8">
+      <div className="w-full flex flex-col p-2">
         <h1 className="font-bold text-4xl mt-4">Career</h1>
+        <CareerCard
+          companyName="Podium"
+          endYear="Present"
+          Icon={PodiumIcon}
+          position="Software Engineer"
+          startYear="2021"
+          technologies={['Javascript', 'Typescript', 'React', 'Chakra', 'Graphql']}
+        />
 
-        {/* Podium */}
-        <div className="w-full flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-md mt-4">
-          <PodiumIcon size={32} />
-          <div className="flex flex-col flex-grow px-4 leading-none">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-2xl">Podium</h3>
-              <p className="text-sm text-gray-600">2021 - Present</p>
-            </div>
+        <CareerCard
+          companyName="MX"
+          endYear="2021"
+          Icon={MXIcon}
+          position="Software Engineer"
+          startYear="2019"
+          technologies={['Javascript', 'React', 'Redux', 'Axios', 'RxJS', 'D3', 'Storybook']}
+        />
 
-            <p className="text-sm text-gray-600">Software Engineer</p>
-          </div>
-        </div>
-
-        {/* MX */}
-        <div className="w-full flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-md mt-4">
-          <MXIcon size={32} />
-          <div className="flex flex-col flex-grow px-4 leading-none">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-2xl">MX</h3>
-              <p className="text-sm text-gray-600">2019 - 2021</p>
-            </div>
-
-            <p className="text-sm text-gray-600">Frontend Engineer</p>
-          </div>
-        </div>
-
-        {/* DevMtn */}
-        <div className="w-full flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-md mt-4">
-          <DevMtnIcon size={32} />
-          <div className="flex flex-col flex-grow px-4 leading-none">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-2xl">DevMtn</h3>
-              <p className="text-sm text-gray-600">2018 - 2019</p>
-            </div>
-
-            <p className="text-sm text-gray-600">Web Development Mentor</p>
-          </div>
-        </div>
+        <CareerCard
+          companyName="DevMountain"
+          endYear="2018"
+          Icon={DevMtnIcon}
+          position="Web Development Mentor"
+          startYear="2019"
+          technologies={[
+            'Html',
+            'Css',
+            'Javascript',
+            'React',
+            'Redux',
+            'Node',
+            'Express',
+            'PostgreSQL',
+          ]}
+        />
       </div>
     </Layout>
   )
