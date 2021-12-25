@@ -54,9 +54,32 @@ export default function Home() {
         </div>
       </div>
 
+      {/* About Section */}
+      <div className="w-full flex flex-col py-8">
+        <h2 className="font-bold text-3xl">About</h2>
+        <p className="mt-4 text-gray-600 dark:text-gray-400">
+          Hey, I'm Tayte! I'm digital craftsmen based emphasizing on web development. I'm currently
+          working full time as a Software Engineer at Podium.
+        </p>
+        <p className="mt-4 text-gray-600 dark:text-gray-400">
+          I have a strong passion for building products that deliver value and make a meaningful
+          impact on the end user. I've had the privilege to help contribute and develop the user
+          interface for personal financial management tools used by millions during my employment at
+          MX. I'm now venturing into working on the frontend infrastructure of the software that is
+          used to empower local businesses to have meaningful connections with their clientale at
+          Podium.
+        </p>
+
+        <p className="mt-4 text-gray-600 dark:text-gray-400">
+          Outside of work, I enjoy learning new things and spending as much time as I can pursuing
+          my hobbies. Right now those hobbies include learning to play the guitar, snowboarding and
+          skateboarding, trying out new coffee shops, and hanging out with the homies.
+        </p>
+      </div>
+
       {/* Career Section */}
       <div className="w-full flex flex-col py-8">
-        <h1 className="font-bold text-4xl mt-4">Career</h1>
+        <h2 className="font-bold text-3xl">Career</h2>
         <CareerCard
           companyName="Podium"
           endYear="Present"

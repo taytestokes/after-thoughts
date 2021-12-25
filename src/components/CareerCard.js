@@ -1,20 +1,9 @@
 import React from 'react'
 
-export const CareerCard = ({
-  companyName,
-  endYear,
-  Icon,
-  position,
-  startYear,
-  technologies = [],
-}) => {
+export const CareerCard = ({ companyName, endYear, position, startYear, technologies = [] }) => {
   return (
-    <div className="w-full flex p-4 border border-gray-200 dark:border-gray-700 rounded-md mt-4">
-      <div className="flex flex-col items-center justify-center p-4">
-        <Icon size={30} />
-      </div>
-
-      <div className="flex flex-col flex-grow px-4">
+    <div className="w-full flex p-4 border border-gray-300 dark:border-gray-700 rounded-md mt-4">
+      <div className="flex flex-col flex-grow ">
         <div className="w-full flex flex-col md:flex-row md:items-center justify-between">
           <h3 className="font-bold text-2xl">{companyName}</h3>
 
