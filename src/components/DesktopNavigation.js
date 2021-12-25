@@ -8,7 +8,7 @@ export const DesktopNavigation = () => {
   const router = useRouter()
 
   return (
-    <div className="hidden md:flex items-center ml-auto">
+    <div className="hidden md:flex items-center">
       <Link href="/blog">
         <a
           className={`px-4 py-3 leading-none ${

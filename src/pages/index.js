@@ -58,15 +58,15 @@ export default function Home() {
       <div className="w-full flex flex-col py-8">
         <h2 className="font-bold text-3xl">About</h2>
         <p className="mt-4 text-gray-600 dark:text-gray-400">
-          Hey, my name is Tayte! I'm digital craftsmen based emphasizing on web development. I am
-          currently working full time as a Software Engineer at Podium.
+          Hey, I'm Tayte! I'm digital craftsmen based emphasizing on web development. I'm currently
+          working full time as a Software Engineer at Podium.
         </p>
         <p className="mt-4 text-gray-600 dark:text-gray-400">
           I have a strong passion for building products that deliver value and make a meaningful
-          impact on the end user. I have had the privilege to help contribute and develop the user
+          impact on the end user. I've had the privilege to help contribute and develop the user
           interface for personal financial management tools used by millions during my employment at
-          MX. I amm now venturing into working on the frontend infrastructure of the software that
-          is used to empower local businesses to have meaningful connections with their clientale at
+          MX. I'm now venturing into working on the frontend infrastructure of the software that is
+          used to empower local businesses to have meaningful connections with their clientale at
           Podium.
         </p>
 
