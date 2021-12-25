@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <Layout>
       {/* Introduction Section */}
-      <div className="w-full flex flex-col flex-grow items-center justify-center text-center py-8">
+      <div className="w-full flex flex-col items-start py-8">
         <div className="flex items-center rounded-full border-4 border-gray-200 dark:border-gray-800 ">
           <Image
             alt="Profile photo of Tayte Stokes"
@@ -23,42 +23,19 @@ export default function Home() {
             width={125}
           />
         </div>
-
         <h1 className="font-bold text-4xl mt-4">Tayte Stokes</h1>
 
         <p className="mt-2 text-gray-600 dark:text-gray-400">
           I am a digital craftsmen focusing on web development. I am currently employed and work
           full time as a Software Engineer at Podium.
         </p>
-
-        <div className="w-full flex items-center justify-center text-sm mt-8 space-x-4 text-gray-600 dark:text-gray-400">
-          <a
-            className="flex items-center p-4 rounded-md bg-gray-100 dark:bg-gray-900 leading-none"
-            href="https://github.com/taytestokes"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <FiGithub className="mr-2" />
-            Github
-          </a>
-
-          <a
-            className="flex items-center p-4 rounded-md bg-gray-100 dark:bg-gray-900 leading-none"
-            href="https://twitter.com/taytestokes"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <FiTwitter className="mr-2" />
-            Twitter
-          </a>
-        </div>
       </div>
 
       {/* About Section */}
       <div className="w-full flex flex-col py-8">
         <h2 className="font-bold text-3xl">About</h2>
         <p className="mt-4 text-gray-600 dark:text-gray-400">
-          Hey, I'm Tayte! I'm digital craftsmen based emphasizing on web development. I'm currently
+          Hey, I'm Tayte! I'm digital craftsmen emphasizing on web development. I'm currently
           working full time as a Software Engineer at Podium.
         </p>
         <p className="mt-4 text-gray-600 dark:text-gray-400">
@@ -68,12 +45,6 @@ export default function Home() {
           MX. I'm now venturing into working on the frontend infrastructure of the software that is
           used to empower local businesses to have meaningful connections with their clientale at
           Podium.
-        </p>
-
-        <p className="mt-4 text-gray-600 dark:text-gray-400">
-          Outside of work, I enjoy learning new things and spending as much time as I can pursuing
-          my hobbies. Right now those hobbies include learning to play the guitar, snowboarding and
-          skateboarding, trying out new coffee shops, and hanging out with the homies.
         </p>
       </div>
 
