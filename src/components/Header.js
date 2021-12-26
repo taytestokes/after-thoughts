@@ -1,25 +1,12 @@
 import React from 'react'
 
-import Link from 'next/link'
-
-import { LogoIcon } from './icons/LogoIcon'
-import { MobileNavigation } from './MobileNavigation'
-import { DesktopNavigation } from './DesktopNavigation'
-
 export const Header = () => {
   return (
-    <header className="container mx-auto relative w-full flex items-center justify-between py-8 px-2">
-      <Link href="/">
-        <a className="flex items-center">
-          <LogoIcon />
-          taytestokes.io
-        </a>
-      </Link>
-
-      {/* Mobile Navigation */}
-      <MobileNavigation />
-      {/* Desktop Navigation */}
-      <DesktopNavigation />
+    <header>
+      <div className="h-2 bg-gray-900" />
+      <div className="container flex items-center py-8">
+        <h1>After Thoughts</h1>
+      </div>
     </header>
   )
 }

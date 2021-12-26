@@ -4,10 +4,8 @@ class MyDocument extends Document {
   render() {
     return (
       <Html lang="en">
-        <Head>
-          <link rel="icon" href="/logo.svg" />
-        </Head>
-        <body>
+        <Head />
+        <body className="text-white bg-black">
           <Main />
           <NextScript />
         </body>
