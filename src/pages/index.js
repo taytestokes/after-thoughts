@@ -9,7 +9,7 @@ export default function Home({ posts }) {
     <Layout>
       {posts?.map((post, index) => {
         return (
-          <div keuy={`${post} - ${index}`}>
+          <div key={`${post} - ${index}`}>
             <Link href={`/blog/${post.slug}`}>
               <a>{post.data.title}</a>
             </Link>
