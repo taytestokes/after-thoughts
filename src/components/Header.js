@@ -4,7 +4,7 @@ export const Header = () => {
   return (
     <header>
       <div className="h-2 bg-gray-900" />
-      <div className="container flex items-center py-8"></div>
+      <div className="container flex items-center py-8 px-4"></div>
     </header>
   )
 }

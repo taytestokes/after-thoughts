@@ -1,6 +1,5 @@
 import React from 'react'
 import { BsGithub, BsTwitter } from 'react-icons/bs'
-import { LogoIcon } from './icons/LogoIcon'
 
 export const Footer = () => {
   return (

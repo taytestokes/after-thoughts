@@ -8,7 +8,6 @@ export default function PostPage({ postContent, postData }) {
   return (
     <Layout>
       <h1 className="text-4xl font-bold">{postData.title}</h1>
-      <h2 className="mt-4">{postData.publishedAt}</h2>
       <div className="markdown" dangerouslySetInnerHTML={{ __html: marked(postContent) }} />
     </Layout>
   )
