@@ -12,7 +12,7 @@ export default function Home({ posts }) {
       <Head>
         <title>After Thoughts</title>
       </Head>
-      <div className="w-full">
+      <div className="w-full space-y-8">
         {posts?.map((post, index) => {
           const publishedDate = format(new Date(post.data.publishedAt), 'MMMM dd, yyyy')
           return (
