@@ -36,7 +36,6 @@ export const Layout = ({ children, metaDataOverrides }) => {
         <meta name="twitter:description" content={metaData.description} />
         <meta name="twitter:creator" content="@taytestokes" />
         <meta name="twitter:creator" content="@taytestokes" />
-        <meta name="twitter:image" content={meta.image} />
         <link rel="canonical" href={`https://taytestokes${router.asPath}`} />
       </Head>
 
