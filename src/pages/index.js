@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import Link from 'next/link'
 import format from 'date-fns/format'
 
@@ -8,6 +9,9 @@ import { Layout } from '../components/Layout'
 export default function Home({ posts }) {
   return (
     <Layout>
+      <Head>
+        <title>After Thoughts</title>
+      </Head>
       <div className="w-full">
         {posts?.map((post, index) => {
           const publishedDate = format(new Date(post.data.publishedAt), 'MMMM dd, yyyy')
