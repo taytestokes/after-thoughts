@@ -12,7 +12,7 @@
 }
 
 .markdown p {
-  @apply text-gray-400 pb-6;
+  @apply text-gray-300 pb-6;
 }
 
 /* Dotted Background */
