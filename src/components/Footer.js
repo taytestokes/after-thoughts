@@ -8,12 +8,12 @@ export const Footer = () => {
 
       <ul className="flex items-center divide-x divide-gray-400 divide-opacity-50">
         <li className="hover:text-white pr-4">
-          <a href="https://twitter.com/taytestokes">
+          <a href="https://twitter.com/taytestokes" target="_blank" rel="noopener noreferrer">
             <BsTwitter size={20} />
           </a>
         </li>
         <li className="hover:text-white pl-4">
-          <a href="https://github.com/taytestokes">
+          <a href="https://github.com/taytestokes" target="_blank" rel="noopener noreferrer">
             <BsGithub size={20} />
           </a>
         </li>
