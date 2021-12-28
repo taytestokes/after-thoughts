@@ -1,12 +1,12 @@
 import firestore from '../../../../lib/firebase-admin'
 
 export default async (req, res) => {
-  const isDevelopment = process.env.NODE_ENV === 'development'
-  const { slug } = req.query
+  try {
+    const isDevelopment = process.env.NODE_ENV === 'development'
+    const { slug } = req.query
 
-  // POST - Update view count for post
-  if (req.method === 'POST' && !isDevelopment) {
-    try {
+    // POST - Update view count for post
+    if (req.method === 'POST' && !isDevelopment) {
       const postRef = firestore.collection('posts').doc(slug)
       const postDoc = await postRef.get()
 
@@ -26,13 +26,17 @@ export default async (req, res) => {
       }
 
       return res.status(200).json({ error: false, message: 'View count updated!' })
-    } catch (error) {
-      return res.status(500).json({ error: true, message: error.message })
     }
-  }
 
-  // GET - Get the view count for the post
-  if (req.method === 'GET') {
-    res.status(200).json({ name: 'John Doe' })
+    // GET - Get the view count for the post
+    if (req.method === 'GET') {
+      const postRef = firestore.collection('posts').doc(slug)
+      const postDoc = await postRef.get()
+      const { views } = postDoc.data()
+
+      return res.status(200).json({ views })
+    }
+  } catch (error) {
+    return res.status(500).json({ error: true, message: error.message })
   }
 }

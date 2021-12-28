@@ -13,7 +13,7 @@ import profilePicture from '../../public/profile.jpeg'
 import { fetcher } from '../../lib/swr'
 
 export default function PostPage({ postContent, postData, slug }) {
-  // const { data, error } = useSWR(`/api/posts/views/${slug}`, fetcher)
+  const { data } = useSWR(`/api/posts/views/${slug}`, fetcher)
 
   React.useEffect(() => {
     fetch(`/api/posts/views/${slug}`, {
