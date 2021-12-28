@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import format from 'date-fns/format'
+
 import { BiSearch } from 'react-icons/bi'
 
 import { getPostSlugs, getPosts } from '../utils/blog'
@@ -27,13 +27,10 @@ export default function Home({ posts }) {
 
       <div className="w-full mt-8 space-y-8">
         {posts?.map((post, index) => {
-          const publishedDate = format(new Date(post.data.publishedAt), 'MMMM dd, yyyy')
-
           return (
             <Link href={`/blog/${post.slug}`} key={`${post} - ${index}`}>
               <div className="cursor-pointer">
                 <h2 className="text-2xl font-bold">{post.data.title}</h2>
-                <span className="text-sm">{publishedDate}</span>
                 <p className="text-gray-400">{post.data.excerpt}</p>
               </div>
             </Link>
