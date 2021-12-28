@@ -2,6 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import format from 'date-fns/format'
 import { marked } from 'marked'
+import useSWR from 'swr'
 
 import { getPostSlugs, getPostBySlug } from '../../utils/blog'
 
@@ -9,7 +10,17 @@ import { Layout } from '../../components/Layout'
 
 import profilePicture from '../../public/profile.jpeg'
 
-export default function PostPage({ postContent, postData }) {
+import { fetcher } from '../../lib/swr'
+
+export default function PostPage({ postContent, postData, slug }) {
+  // const { data, error } = useSWR(`/api/posts/views/${slug}`, fetcher)
+
+  React.useEffect(() => {
+    fetch(`/api/posts/views/${slug}`, {
+      method: 'POST',
+    })
+  }, [])
+
   return (
     <Layout>
       <div className="w-full flex flex-col items-start">
@@ -64,6 +75,7 @@ export async function getStaticProps({ params: { slug } }) {
     props: {
       postContent: post.content,
       postData: post.data,
+      slug,
     },
   }
 }
