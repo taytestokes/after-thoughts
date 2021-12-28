@@ -2,11 +2,10 @@ import firestore from '../../../../lib/firebase-admin'
 
 export default async (req, res) => {
   try {
-    const isDevelopment = process.env.NODE_ENV === 'development'
     const { slug } = req.query
 
     // POST - Update view count for post
-    if (req.method === 'POST' && !isDevelopment) {
+    if (req.method === 'POST') {
       const postRef = firestore.collection('posts').doc(slug)
       const postDoc = await postRef.get()
 
