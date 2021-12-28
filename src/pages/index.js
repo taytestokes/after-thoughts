@@ -1,6 +1,6 @@
-import Head from 'next/head'
 import Link from 'next/link'
 import format from 'date-fns/format'
+import { BiSearch } from 'react-icons/bi'
 
 import { getPostSlugs, getPosts } from '../utils/blog'
 
@@ -9,10 +9,20 @@ import { Layout } from '../components/Layout'
 export default function Home({ posts }) {
   return (
     <Layout>
-      <Head>
-        <title>After Thoughts</title>
-      </Head>
-      <div className="w-full space-y-8">
+      <div className="w-full flex flex-col items-start">
+        <h1 className="text-3xl font-black">After Thoughts</h1>
+        <p className="text-gray-400">A software development blog for all things web related.</p>
+        <div className="relative w-full mt-8">
+          <BiSearch className="absolute left-2 top-3 h-5 w-5 pointer-events-none text-gray-400" />
+          <input
+            className="w-full block px-4 py-2 pl-8 border border-gray-700 bg-gray-900 text-gray-400 rounded-md"
+            id="search"
+            placeholder="Search posts"
+          />
+        </div>
+      </div>
+
+      <div className="w-full mt-8 space-y-8">
         {posts?.map((post, index) => {
           const publishedDate = format(new Date(post.data.publishedAt), 'MMMM dd, yyyy')
           return (

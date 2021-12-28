@@ -12,9 +12,6 @@ import profilePicture from '../../public/profile.jpeg'
 export default function PostPage({ postContent, postData }) {
   return (
     <Layout>
-      <Head>
-        <title>After Thoughts - {postData.title}</title>
-      </Head>
       <div className="w-full flex flex-col items-start">
         <h1 className="text-4xl font-bold">{postData.title}</h1>
         <div className="w-full flex items-center text-sm text-gray-400 mt-4">
