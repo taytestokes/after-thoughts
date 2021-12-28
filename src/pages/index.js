@@ -1,3 +1,4 @@
+import React from 'react'
 import Link from 'next/link'
 import format from 'date-fns/format'
 import { BiSearch } from 'react-icons/bi'
@@ -10,8 +11,10 @@ export default function Home({ posts }) {
   return (
     <Layout>
       <div className="w-full flex flex-col items-start">
-        <h1 className="text-3xl font-black">After Thoughts</h1>
-        <p className="text-gray-400">A software development blog for all things web related.</p>
+        <h1 className="text-4xl font-black">After Thoughts</h1>
+        <p className="text-gray-400">
+          Welcome! This is a software development blog for all things web related.
+        </p>
         <div className="relative w-full mt-8">
           <BiSearch className="absolute left-2 top-3 h-5 w-5 pointer-events-none text-gray-400" />
           <input
@@ -25,6 +28,7 @@ export default function Home({ posts }) {
       <div className="w-full mt-8 space-y-8">
         {posts?.map((post, index) => {
           const publishedDate = format(new Date(post.data.publishedAt), 'MMMM dd, yyyy')
+
           return (
             <Link href={`/blog/${post.slug}`} key={`${post} - ${index}`}>
               <div className="cursor-pointer">
