@@ -8,7 +8,7 @@ import { getPostSlugs, getPosts } from '../utils/blog'
 export default function Home({ posts }) {
   return (
     <Layout>
-      <div className="w-full mt-8 space-y-8">
+      <div className="w-full space-y-8">
         {posts?.map((post, index) => {
           return <PostCard key={`${post.slug} - ${index}}`} post={post} />
         })}

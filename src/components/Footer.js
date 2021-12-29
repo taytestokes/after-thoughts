@@ -1,10 +1,14 @@
 import React from 'react'
+
 import { BsGithub, BsTwitter } from 'react-icons/bs'
 
 export const Footer = () => {
   return (
-    <footer className="container flex items-center justify-between py-8 mx-auto text-gray-400 text-sm">
-      <span>&copy; 2022 Taytestokes.io</span>
+    <footer className="w-full flex items-center justify-between py-8 mx-auto text-sm">
+      <div className="w-1/2 flex flex-col flex-wrap ml-2 text-xs ">
+        <span className="font-bold">&copy; After Thoughts 2022</span>
+        <span className="text-gray-400">A software development blog by Tayte Stokes</span>
+      </div>
 
       <ul className="flex items-center divide-x divide-gray-400 divide-opacity-50">
         <li className="hover:text-white pr-4">
