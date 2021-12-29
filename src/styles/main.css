@@ -17,8 +17,8 @@
 
 /* Dotted Background */
 .dotted-background {
-  background-image: radial-gradient(#e5e7eb 10%, transparent 10%),
-    radial-gradient(#e5e7eb 10%, transparent 10%);
+  background-image: radial-gradient(#27272a 10%, transparent 10%),
+    radial-gradient(#27272a 10%, transparent 10%);
   background-position: 0 0, 10px 10px;
   background-size: 20px 20px;
 }

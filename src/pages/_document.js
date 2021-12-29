@@ -4,7 +4,9 @@ class MyDocument extends Document {
   render() {
     return (
       <Html lang="en">
-        <Head />
+        <Head>
+          <link rel="shortcut icon" href="/after-thoughts-logo.png" />
+        </Head>
         <body className="text-white bg-black">
           <Main />
           <NextScript />
