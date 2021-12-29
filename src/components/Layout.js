@@ -38,12 +38,15 @@ export const Layout = ({ children, metaDataOverrides }) => {
         <meta name="twitter:creator" content="@taytestokes" />
         <link rel="canonical" href={`https://afterthoughts.dev${router.asPath}`} />
       </Head>
+      <div className="h-2 bg-gray-900" />
 
-      <Header />
       <main className="container flex flex-col flex-grow items-center mx-auto px-4">
-        {typeof children === 'function' ? children() : children}
+        <Header />
+        <div className="w-full flex-grow">
+          {typeof children === 'function' ? children() : children}
+        </div>
+        <Footer />
       </main>
-      <Footer />
     </div>
   )
 }
