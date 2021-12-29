@@ -27,7 +27,7 @@ export const Layout = ({ children, metaDataOverrides }) => {
         <meta property="og:title" content={metaData.title} />
         {/* TODO: Implement open graph image tag once a website image has been created */}
         {/* <meta property="og:image" content={} /> */}
-        <meta property="og:url" content={`https://taytestokes${router.asPath}`} />
+        <meta property="og:url" content={`https://afterthoughts.dev${router.asPath}`} />
         <meta property="og:description" content={metaData.description} />
         <meta property="og:locale" content="en_US" />
         <meta property="og:site_name" content="After Thoughts" />
@@ -36,7 +36,7 @@ export const Layout = ({ children, metaDataOverrides }) => {
         <meta name="twitter:description" content={metaData.description} />
         <meta name="twitter:creator" content="@taytestokes" />
         <meta name="twitter:creator" content="@taytestokes" />
-        <link rel="canonical" href={`https://taytestokes${router.asPath}`} />
+        <link rel="canonical" href={`https://afterthoughts.dev${router.asPath}`} />
       </Head>
 
       <Header />

@@ -6,6 +6,7 @@ import { FiCalendar } from 'react-icons/fi'
 export const Post = ({ post }) => {
   const router = useRouter()
   const publishedDate = format(new Date(post.attributes.publishedAt), 'MMMM dd, yyyy')
+
   return (
     <button
       className="w-full text-left rounded-md"
