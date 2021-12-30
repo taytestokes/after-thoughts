@@ -26,10 +26,7 @@ export const Layout = ({ children, metaDataOverrides }) => {
         <meta name="robots" content="index, follow" />
         <meta property="og:type" content={metaData.type} />
         <meta property="og:title" content={metaData.title} />
-        <meta
-          property="og:image"
-          content={`${metaData.url}/public/after-thoughts-block-logo.jpg`}
-        />
+        <meta property="og:image" content={`${metaData.url}/after-thoughts-block-logo.jpg`} />
         <meta property="og:url" content={`${metaData.url}${router.asPath}`} />
         <meta property="og:description" content={metaData.description} />
         <meta property="og:locale" content="en_US" />
@@ -37,10 +34,7 @@ export const Layout = ({ children, metaDataOverrides }) => {
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content={metaData.title} />
         <meta name="twitter:description" content={metaData.description} />
-        <meta
-          name="twitter:image"
-          content={`${metaData.url}/public/after-thoughts-block-logo.jpg`}
-        />
+        <meta name="twitter:image" content={`${metaData.url}/after-thoughts-block-logo.jpg`} />
         <meta name="twitter:site" content="@taytestokes" />
         <meta name="twitter:creator" content="@taytestokes" />
         <link rel="canonical" href={`${metaData.url}${router.asPath}`} />
