@@ -23,7 +23,7 @@ export const FeaturedPostCard = ({ featuredPost }) => {
 
           <h3 className="text-2xl font-extrabold">{featuredPost.data.title}</h3>
 
-          <p className="text-gray-400">{featuredPost.data.excerpt}</p>
+          <p className="text-gray-400 mt-2">{featuredPost.data.excerpt}</p>
 
           <div className="flex items-center justify-between mt-4 text-sm text-gray-400">
             <span>Posted {publishedDate}</span>

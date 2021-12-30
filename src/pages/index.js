@@ -12,8 +12,10 @@ export default function Home({ posts }) {
   return (
     <Layout>
       <FeaturedPostCard featuredPost={featuredPost} />
-
-      <div className="w-full mt-8 space-y-8">
+      <div className="mt-8">
+        <h2 className="text-2xl font-extrabold">Recent Posts</h2>
+      </div>
+      <div className="w-full mt-4 space-y-8">
         {posts?.map((post, index) => {
           return <PostCard key={`${post.slug} - ${index}}`} post={post} />
         })}
