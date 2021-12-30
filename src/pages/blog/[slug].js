@@ -2,17 +2,12 @@ import React from 'react'
 import Image from 'next/image'
 import format from 'date-fns/format'
 import { marked } from 'marked'
-import useSWR from 'swr'
 
 import { getPostSlugs, getPostBySlug } from '../../utils/blog'
 
 import { Layout } from '../../components/Layout'
 
-import { fetcher } from '../../lib/swr'
-
 export default function PostPage({ postContent, postData, slug }) {
-  const { data } = useSWR(`/api/posts/views/${slug}`, fetcher)
-
   React.useEffect(() => {
     fetch(`/api/posts/views/${slug}`, {
       method: 'POST',

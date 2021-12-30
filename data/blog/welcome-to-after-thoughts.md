@@ -2,6 +2,7 @@
 title: 'Welcome to After Thoughts'
 publishedAt: '2021-12-27'
 excerpt: 'Welcome to After Thoughts! This is my personal and software development blog.'
+featured: true
 ---
 
 Welcome to After Thoughts! This is my personal and software development blog. This is the platform that I have been wanting to create for a while and I'm stoked to finally get around to creating it.

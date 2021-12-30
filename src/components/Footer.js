@@ -4,7 +4,7 @@ import { BsGithub, BsTwitter } from 'react-icons/bs'
 
 export const Footer = () => {
   return (
-    <footer className="w-full flex items-center justify-between py-8 mx-auto text-sm">
+    <footer className="w-full flex items-center justify-between py-8 text-sm">
       <div className="w-1/2 flex flex-col flex-wrap text-xs ">
         <span className="font-bold">&copy; After Thoughts 2022</span>
         <span className="text-gray-400">A software development blog by Tayte Stokes</span>
