@@ -8,8 +8,6 @@ import { getPostSlugs, getPostBySlug } from '../../utils/blog'
 
 import { Layout } from '../../components/Layout'
 
-import profilePicture from '../../public/profile.jpeg'
-
 import { fetcher } from '../../lib/swr'
 
 export default function PostPage({ postContent, postData, slug }) {
@@ -31,7 +29,7 @@ export default function PostPage({ postContent, postData, slug }) {
               alt="Tayte Stokes"
               className="rounded-full"
               height={30}
-              src={profilePicture}
+              src="/profile.jpeg"
               width={30}
             />
           </span>
