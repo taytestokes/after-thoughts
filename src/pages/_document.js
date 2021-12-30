@@ -5,7 +5,7 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          <link rel="shortcut icon" href="/after-thoughts-logo.png" />
+          <link rel="shortcut icon" href="/after-thoughts-block-logo.jpg" />
         </Head>
         <body className="text-white bg-black">
           <Main />

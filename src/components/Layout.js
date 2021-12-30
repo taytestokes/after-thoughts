@@ -12,6 +12,7 @@ export const Layout = ({ children, metaDataOverrides }) => {
     description: 'Software development blog created by Tayte Stokes',
     author: 'Tayte Stokes',
     type: 'website',
+    url: 'https://afterthoughts.dev',
     ...metaDataOverrides,
   }
 
@@ -25,18 +26,24 @@ export const Layout = ({ children, metaDataOverrides }) => {
         <meta name="robots" content="index, follow" />
         <meta property="og:type" content={metaData.type} />
         <meta property="og:title" content={metaData.title} />
-        {/* TODO: Implement open graph image tag once a website image has been created */}
-        {/* <meta property="og:image" content={} /> */}
-        <meta property="og:url" content={`https://afterthoughts.dev${router.asPath}`} />
+        <meta
+          property="og:image"
+          content={`${metaData.url}/public/after-thoughts-block-logo.jpg`}
+        />
+        <meta property="og:url" content={`${metaData.url}${router.asPath}`} />
         <meta property="og:description" content={metaData.description} />
         <meta property="og:locale" content="en_US" />
         <meta property="og:site_name" content="After Thoughts" />
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content={metaData.title} />
         <meta name="twitter:description" content={metaData.description} />
+        <meta
+          name="twitter:image"
+          content={`${metaData.url}/public/after-thoughts-block-logo.jpg`}
+        />
+        <meta name="twitter:site" content="@taytestokes" />
         <meta name="twitter:creator" content="@taytestokes" />
-        <meta name="twitter:creator" content="@taytestokes" />
-        <link rel="canonical" href={`https://afterthoughts.dev${router.asPath}`} />
+        <link rel="canonical" href={`${metaData.url}${router.asPath}`} />
       </Head>
       <div className="h-2 bg-gray-900" />
 
