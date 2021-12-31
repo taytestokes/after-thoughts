@@ -1,11 +1,21 @@
 ---
 title: 'Welcome to After Thoughts'
-publishedAt: '2021-12-27'
-excerpt: 'Welcome to After Thoughts! This is my personal and software development blog.'
+publishedAt: '2021-12-31'
+excerpt: 'This is a software development blog that I plan on using as a resource to document
+and share what I learn during my software development journey'
 image: '/posts/welcome-to-after-thoughts/banner.jpg'
 featured: true
 ---
 
-Welcome to After Thoughts! This is my personal and software development blog. This is the platform that I have been wanting to create for a while and I'm stoked to finally get around to creating it.
+Hey, I'm Tayte and welcome to After Thoughts! This is a software development blog that I plan on using as a resource to document
+and share what I learn during my software development journey.
 
-I plan on using this platform to document and share my learnings during my software development journey. I'm hoping that by sharing what I learn, it will help me build a better understanding around the topic as well as help others.
+I have been wanting to create a platform like this for a while now, but I just haven't been able to get around to doing it until now.
+
+The motivation behind creating this is to have a "single source of truth" that I can use to reference what I learn and it's a bonus if others
+are able to find value in what I document.
+
+I used to work as a mentor for a coding bootcamp and found a ton of value and purpose in being able to share
+what I know and help others in their journey. I'm hoping to find that value and purpose again through this platform.
+
+Thanks for stopping by and I hope that you'll stick around!
