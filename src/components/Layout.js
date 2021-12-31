@@ -9,7 +9,7 @@ export const Layout = ({ children, metaDataOverrides }) => {
   const router = useRouter()
   const metaData = {
     title: 'After Thoughts',
-    description: 'Software development blog created by Tayte Stokes',
+    description: 'A software development blog created by Tayte Stokes',
     author: 'Tayte Stokes',
     type: 'website',
     url: 'https://afterthoughts.dev',
