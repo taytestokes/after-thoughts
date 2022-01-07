@@ -1,8 +1,7 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-  purge: ['./src/pages/**/*.js', './src/components/**/*.js'],
-  darkMode: 'class',
+  content: ['./src/pages/**/*.js', './src/components/**/*.js'],
   theme: {
     extend: {
       screens: {
@@ -13,13 +12,9 @@ module.exports = {
         '2xl': '768px',
       },
       colors: {
-        ...colors,
-        gray: colors.gray,
+        gray: colors.zinc,
       },
     },
-  },
-  variants: {
-    extend: {},
   },
   plugins: [],
 }
