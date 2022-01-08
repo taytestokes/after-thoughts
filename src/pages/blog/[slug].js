@@ -27,18 +27,6 @@ export default function PostPage({ postContent, postData, slug }) {
           <span>Published {format(new Date(postData.publishedAt), 'MMMM dd, yyyy')}</span>
           <span>{loading ? '-' : postViews} Views</span>
         </div>
-        <div className="w-full flex items-center text-sm text-zinc-700 mt-4">
-          <span className="flex items-center border border-zinc-700 rounded-full">
-            <Image
-              alt="Tayte Stokes"
-              className="rounded-full"
-              height={30}
-              src="/profile.jpeg"
-              width={30}
-            />
-          </span>
-          <span className="ml-2">Tayte Stokes</span>
-        </div>
       </div>
 
       <div className="relative w-full bg-black h-64 border border-zinc-700 rounded-md mt-8">

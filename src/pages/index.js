@@ -15,7 +15,8 @@ export default function Home({ posts }) {
       <div className="mt-8">
         <h2 className="text-2xl text-zinc-900 font-extrabold">Recent Posts</h2>
       </div>
-      <div className="w-full mt-4 space-y-8">
+
+      <div className="w-full mt-4 grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-4">
         {posts?.map((post, index) => {
           return <PostCard key={`${post.slug} - ${index}}`} post={post} />
         })}

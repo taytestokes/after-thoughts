@@ -1,15 +1,13 @@
-const colors = require('tailwindcss/colors')
-
 module.exports = {
   content: ['./src/pages/**/*.js', './src/components/**/*.js'],
   theme: {
     extend: {
       screens: {
-        sm: '420px',
-        md: '620px',
-        lg: '768px',
-        xl: '768px',
-        '2xl': '768px',
+        sm: '600px',
+        md: '768px',
+        lg: '900px',
+        xl: '1080px',
+        '2xl': '1080px',
       },
     },
   },

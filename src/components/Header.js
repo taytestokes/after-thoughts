@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 export const Header = () => {
   return (
-    <header className="w-full flex items-center py-8">
+    <header className="sticky top-0 w-full flex items-center py-8">
       <Link href="/">
         <a>
           <Image
