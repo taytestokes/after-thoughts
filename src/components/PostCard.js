@@ -6,8 +6,8 @@ export const PostCard = ({ post }) => {
     <Link href={`/blog/${post.slug}`}>
       <a>
         <div>
-          <h3 className="text-xl font-bold">{post.data.title}</h3>
-          <p className="text-gray-400">{post.data.excerpt}</p>
+          <h3 className="text-xl text-zinc-900 font-bold">{post.data.title}</h3>
+          <p className="text-zinc-700">{post.data.excerpt}</p>
         </div>
       </a>
     </Link>

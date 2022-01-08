@@ -7,7 +7,13 @@ export const Header = () => {
     <header className="w-full flex items-center py-8">
       <Link href="/">
         <a>
-          <Image alt="After Thoughts Logo" height={50} width={50} src="/after-thoughts-logo.svg" />
+          <Image
+            alt="After Thoughts Logo"
+            className="rounded-md"
+            height={45}
+            width={45}
+            src="/after-thoughts-block-logo.jpg"
+          />
         </a>
       </Link>
     </header>

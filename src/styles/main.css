@@ -12,5 +12,5 @@
 }
 
 .markdown p {
-  @apply text-gray-300 pb-6;
+  @apply text-zinc-700 pb-6;
 }

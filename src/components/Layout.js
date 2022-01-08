@@ -17,7 +17,7 @@ export const Layout = ({ children, metaDataOverrides }) => {
   }
 
   return (
-    <div className="w-screen min-h-screen overflow-hidden flex flex-col dark:bg-black dark:text-white">
+    <div className="w-screen min-h-screen overflow-hidden flex flex-col">
       <Head>
         <title>{metaData.title}</title>
         <meta name="description" content={metaData.description} />
@@ -39,7 +39,6 @@ export const Layout = ({ children, metaDataOverrides }) => {
         <meta name="twitter:creator" content="@taytestokes" />
         <link rel="canonical" href={`${metaData.url}${router.asPath}`} />
       </Head>
-      <div className="h-2 bg-gray-900" />
 
       <main className="container flex flex-col flex-grow items-center mx-auto px-4">
         <Header />

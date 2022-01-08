@@ -13,7 +13,7 @@ export default function Home({ posts }) {
     <Layout>
       <FeaturedPostCard featuredPost={featuredPost} />
       <div className="mt-8">
-        <h2 className="text-2xl font-extrabold">Recent Posts</h2>
+        <h2 className="text-2xl text-zinc-900 font-extrabold">Recent Posts</h2>
       </div>
       <div className="w-full mt-4 space-y-8">
         {posts?.map((post, index) => {
