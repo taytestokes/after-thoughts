@@ -3,8 +3,6 @@ import Link from 'next/link'
 import useSWR from 'swr'
 import format from 'date-fns/format'
 
-import { IoSparklesSharp } from 'react-icons/io5'
-
 import { fetcher } from '../lib/swr'
 
 export const FeaturedPostCard = ({ featuredPost }) => {
