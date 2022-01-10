@@ -13,9 +13,6 @@ export default function Home({ posts }) {
   return (
     <Layout>
       <FeaturedPostCard featuredPost={featuredPost} />
-      {/* <div className="py-8">
-        <h2 className="text-2xl text-zinc-900 font-extrabold">Recent Posts</h2>
-      </div> */}
       <Posts posts={posts} />
       <NewsLettersCard />
     </Layout>

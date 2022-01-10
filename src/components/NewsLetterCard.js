@@ -2,7 +2,7 @@ import React from 'react'
 
 export const NewsLettersCard = () => {
   return (
-    <div className="p-4 md:p-8 rounded-md bg-zinc-900">
+    <div className="p-4 md:p-8 rounded-md bg-zinc-900 mt-auto">
       <p className="text-xl text-white font-bold">Subscribe to the newsletter!</p>
       <p className="text-zinc-200 mt-2">
         Sign up for the news letter to receive updates about new posts and other content that won't

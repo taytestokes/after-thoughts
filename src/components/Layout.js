@@ -42,7 +42,9 @@ export const Layout = ({ children, metaDataOverrides }) => {
 
       <main className="container relative flex flex-col grow items-center mx-auto px-4">
         <Header />
-        <div className="w-full grow">{typeof children === 'function' ? children() : children}</div>
+        <div className="w-full flex flex-col grow">
+          {typeof children === 'function' ? children() : children}
+        </div>
         <Footer />
       </main>
     </div>
