@@ -1,14 +1,9 @@
 import React from 'react'
 import Link from 'next/link'
-import useSWR from 'swr'
 import format from 'date-fns/format'
 
-import { fetcher } from '../lib/swr'
-
 export const FeaturedPostCard = ({ featuredPost }) => {
-  const { data, loading } = useSWR(`/api/posts/views/${featuredPost.slug}`, fetcher)
   const publishedDate = format(new Date(featuredPost.data.publishedAt), 'MMMM dd, yyyy')
-  const postViews = data?.views
 
   return (
     <Link href={`/blog/${featuredPost.slug}`}>
@@ -18,7 +13,6 @@ export const FeaturedPostCard = ({ featuredPost }) => {
           <p className="text-zinc-700 mt-2">{featuredPost.data.excerpt}</p>
           <div className="flex items-center justify-between mt-4 text-sm text-zinc-700">
             <span>Posted {publishedDate}</span>
-            <span>{loading ? '-' : postViews} Views</span>
           </div>
         </div>
       </a>

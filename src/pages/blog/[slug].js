@@ -2,30 +2,18 @@ import React from 'react'
 import Image from 'next/image'
 import format from 'date-fns/format'
 import { marked } from 'marked'
-import useSWR from 'swr'
 
 import { getPostSlugs, getPostBySlug } from '../../utils/blog'
-import { fetcher } from '../../lib/swr'
 
 import { Layout } from '../../components/Layout'
 
 export default function PostPage({ postContent, postData, slug }) {
-  const { data, loading } = useSWR(`/api/posts/views/${slug}`, fetcher)
-  const postViews = data?.views
-
-  React.useEffect(() => {
-    fetch(`/api/posts/views/${slug}`, {
-      method: 'POST',
-    })
-  }, [])
-
   return (
     <Layout>
       <div className="w-full flex flex-col items-start">
         <h1 className="text-4xl text-zinc-900 font-extrabold">{postData.title}</h1>
         <div className="w-full flex items-center justify-between text-sm text-zinc-700 mt-2">
           <span>Published {format(new Date(postData.publishedAt), 'MMMM dd, yyyy')}</span>
-          <span>{loading ? '-' : postViews} Views</span>
         </div>
       </div>
 
