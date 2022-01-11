@@ -3,7 +3,7 @@ title: 'Welcome to After Thoughts'
 publishedAt: '2021-12-31'
 excerpt: 'This is a software development blog that I plan on using as a resource to document
 and share what I learn during my software development journey'
-image: '/posts/welcome-to-after-thoughts/banner.jpg'
+image: '/posts/welcome-to-after-thoughts/banner.png'
 featured: true
 ---
 
