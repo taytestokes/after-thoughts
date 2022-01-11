@@ -19,8 +19,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/pages/index.js",
-    "src/components/NewsLetterCard.js"
+    "pages/index.js",
+    "components/NewsLetterCard.js"
   ],
   "exclude": ["node_modules"]
 }

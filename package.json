@@ -8,6 +8,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mdx-js/loader": "^1.6.22",
+    "@next/mdx": "^12.0.7",
     "date-fns": "^2.27.0",
     "firebase-admin": "^10.0.1",
     "gray-matter": "^4.0.3",
