@@ -3,6 +3,7 @@ import React from 'react'
 import { Layout } from '../components/Layout'
 
 import { Posts } from '../components/Posts'
+import { NewsLettersCard } from '../components/NewsLetterCard'
 
 import { getPostSlugs, getPosts } from '../utils/blog'
 
@@ -15,6 +16,7 @@ export default function Home({ posts }) {
         <h2 className="font-bold text-2xl text-zinc-900">Recent Posts</h2>
       </div>
       <Posts posts={posts} />
+      <NewsLettersCard />
     </Layout>
   )
 }
