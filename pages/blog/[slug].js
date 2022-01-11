@@ -18,16 +18,6 @@ export default function PostPage({ postContent, postData, slug }) {
         </div>
       </div>
 
-      <div className="relative w-full bg-black h-64 border border-zinc-700 rounded-md mt-8">
-        <Image
-          alt={`Banner image for ${postData.title}`}
-          layout="fill"
-          objectFit="contain"
-          objectPosition="50% 50%"
-          src={postData.image}
-        />
-      </div>
-
       <div className="markdown mt-8" dangerouslySetInnerHTML={{ __html: marked(postContent) }} />
 
       {/* <NewsLetterCard /> */}
