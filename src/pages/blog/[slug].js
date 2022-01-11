@@ -6,6 +6,7 @@ import { marked } from 'marked'
 import { getPostSlugs, getPostBySlug } from '../../utils/blog'
 
 import { Layout } from '../../components/Layout'
+import { NewsLetterCard } from '../../components/NewsLetterCard'
 
 export default function PostPage({ postContent, postData, slug }) {
   return (
@@ -28,6 +29,8 @@ export default function PostPage({ postContent, postData, slug }) {
       </div>
 
       <div className="markdown mt-8" dangerouslySetInnerHTML={{ __html: marked(postContent) }} />
+
+      {/* <NewsLetterCard /> */}
     </Layout>
   )
 }

@@ -1,5 +1,7 @@
 import React from 'react'
 import Head from 'next/head'
+import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { Header } from './Header'
@@ -40,8 +42,23 @@ export const Layout = ({ children, metaDataOverrides }) => {
         <link rel="canonical" href={`${metaData.url}${router.asPath}`} />
       </Head>
 
-      <main className="container relative flex flex-col grow items-center mx-auto px-4">
-        <Header />
+      <header className="flex flex-col items-center">
+        <div className="container flex items-center py-8 px-4">
+          <Link href="/">
+            <a>
+              <Image
+                alt="After Thoughts Logo"
+                className="rounded-md"
+                height={50}
+                width={50}
+                src="/after-thoughts-block-logo.jpg"
+              />
+            </a>
+          </Link>
+        </div>
+      </header>
+
+      <main className="container flex flex-col grow items-center mx-auto px-4">
         <div className="w-full flex flex-col grow">
           {typeof children === 'function' ? children() : children}
         </div>

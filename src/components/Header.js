@@ -12,7 +12,7 @@ export const Header = () => {
             className="rounded-md"
             height={45}
             width={45}
-            src="/after-thoughts-block-logo.jpg"
+            src="/after-thoughts-logo.png"
           />
         </a>
       </Link>

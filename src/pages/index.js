@@ -1,15 +1,19 @@
 import React from 'react'
 
 import { Layout } from '../components/Layout'
+
 import { Posts } from '../components/Posts'
 
 import { getPostSlugs, getPosts } from '../utils/blog'
 
 export default function Home({ posts }) {
-  // const [featuredPost] = posts.filter((post) => post.data.featured)
+  const [featuredPost] = posts.filter((post) => post.data.featured)
 
   return (
     <Layout>
+      <div>
+        <h2 className="font-bold text-2xl text-zinc-900">Recent Posts</h2>
+      </div>
       <Posts posts={posts} />
     </Layout>
   )
