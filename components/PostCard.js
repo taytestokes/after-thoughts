@@ -12,7 +12,7 @@ export const PostCard = ({ post }) => {
             <p>Featured Post</p>
           </div>
         ) : null}
-        <h3 className="text-2xl font-extrabold">{post.data.title}</h3>
+        <h3 className="text-xl font-extrabold">{post.data.title}</h3>
         <p className="text-zinc-400 mt-2">{post.data.excerpt}</p>
       </a>
     </Link>
