@@ -8,6 +8,24 @@ import { getPostSlugs, getPostBySlug } from '../../utils/blog'
 import { Layout } from '../../components/Layout'
 import { NewsLetterCard } from '../../components/NewsletterSubscriptionForm'
 
+{
+  /* <div className="flex items-start mt-4 space-x-2 ">
+          <div className="border-2 border-zinc-800 rounded-full flex flex-col items-start">
+            <Image
+              alt="Tayte Stokes"
+              className="rounded-full"
+              height={30}
+              src="/profile.jpeg"
+              width={30}
+            />
+          </div>
+          <div className="flex flex-col text-sm">
+            <p className="font-bold">Tayte Stokes</p>
+            <p className="text-xs">{publishedDate}</p>
+          </div>
+        </div> */
+}
+
 export default function PostPage({ postContent, postData, slug }) {
   return (
     <Layout>

@@ -4,9 +4,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import { Header } from './Header'
-import { Footer } from './Footer'
-
 export const Layout = ({ children, metaDataOverrides }) => {
   const router = useRouter()
   const metaData = {
@@ -19,7 +16,7 @@ export const Layout = ({ children, metaDataOverrides }) => {
   }
 
   return (
-    <div className="w-screen min-h-screen overflow-hidden flex flex-col">
+    <div className="w-screen min-h-screen overflow-hidden flex">
       <Head>
         <title>{metaData.title}</title>
         <meta name="description" content={metaData.description} />
@@ -41,30 +38,26 @@ export const Layout = ({ children, metaDataOverrides }) => {
         <meta name="twitter:creator" content="@taytestokes" />
         <link rel="canonical" href={`${metaData.url}${router.asPath}`} />
       </Head>
-      {/* 
-      <header className="flex flex-col items-center">
-        <div className="container flex items-center py-8 px-4">
+
+      <div className="container mx-auto flex flex-col grow px-4">
+        <header className="flex items-center pt-8 text-zinc-600">
           <Link href="/">
             <a>
               <Image
                 alt="After Thoughts Logo"
                 className="rounded-md"
-                height={50}
-                width={50}
-                src="/after-thoughts-block-logo.jpg"
+                height={40}
+                width={40}
+                src="/after-thoughts-logo.svg"
               />
             </a>
           </Link>
-        </div>
-      </header> */}
-
-      <main className="container flex flex-col grow items-center mx-auto px-4">
-        <div className="w-full flex flex-col grow py-8">
+        </header>
+        <main className="flex flex-col grow py-8">
           {typeof children === 'function' ? children() : children}
-        </div>
-      </main>
-
-      <Footer />
+        </main>
+        {/* TODO: Add footer section */}
+      </div>
     </div>
   )
 }

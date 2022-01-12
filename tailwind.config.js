@@ -3,11 +3,11 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        sm: '600px',
-        md: '768px',
-        lg: '900px',
-        xl: '1080px',
-        '2xl': '1080px',
+        sm: '480px',
+        md: '560px',
+        lg: '720px',
+        xl: '900px',
+        '2xl': '900px',
       },
     },
   },

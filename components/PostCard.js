@@ -1,12 +1,19 @@
 import React from 'react'
 import Link from 'next/link'
+import { HiLightningBolt } from 'react-icons/hi'
 
 export const PostCard = ({ post }) => {
   return (
     <Link href={`/blog/${post.slug}`}>
-      <a className="p-4 bg-white shadow-sm border rounded-md">
-        <h3 className="text-2xl text-zinc-900 font-bold">{post.data.title}</h3>
-        <p className="text-zinc-700">{post.data.excerpt}</p>
+      <a className="flex flex-col items-start p-4 border border-zinc-600 rounded-md">
+        {post.data.featured ? (
+          <div className="flex items-center font-bold rounded-md space-x-2 mb-2">
+            <HiLightningBolt />
+            <p>Featured Post</p>
+          </div>
+        ) : null}
+        <h3 className="text-2xl font-extrabold">{post.data.title}</h3>
+        <p className="text-zinc-400 mt-2">{post.data.excerpt}</p>
       </a>
     </Link>
   )
