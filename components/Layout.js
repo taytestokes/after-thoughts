@@ -41,7 +41,7 @@ export const Layout = ({ children, metaDataOverrides }) => {
         <meta name="twitter:creator" content="@taytestokes" />
         <link rel="canonical" href={`${metaData.url}${router.asPath}`} />
       </Head>
-
+      {/* 
       <header className="flex flex-col items-center">
         <div className="container flex items-center py-8 px-4">
           <Link href="/">
@@ -56,14 +56,15 @@ export const Layout = ({ children, metaDataOverrides }) => {
             </a>
           </Link>
         </div>
-      </header>
+      </header> */}
 
       <main className="container flex flex-col grow items-center mx-auto px-4">
-        <div className="w-full flex flex-col grow">
+        <div className="w-full flex flex-col grow py-8">
           {typeof children === 'function' ? children() : children}
         </div>
-        <Footer />
       </main>
+
+      <Footer />
     </div>
   )
 }

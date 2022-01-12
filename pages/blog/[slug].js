@@ -6,7 +6,7 @@ import { marked } from 'marked'
 import { getPostSlugs, getPostBySlug } from '../../utils/blog'
 
 import { Layout } from '../../components/Layout'
-import { NewsLetterCard } from '../../components/NewsLetterCard'
+import { NewsLetterCard } from '../../components/NewsletterSubscriptionForm'
 
 export default function PostPage({ postContent, postData, slug }) {
   return (

@@ -8,16 +8,16 @@ export const FeaturedPostCard = ({ featuredPost }) => {
   const publishedDate = format(new Date(featuredPost.data.publishedAt), 'MMMM dd, yyyy')
   return (
     <Link href={`/blog/${featuredPost.slug}`}>
-      <a className="md:col-span-3 flex flex-col items-start p-4 rounded-md bg-zinc-900 border-4 border-zinc-700">
-        <div className="flex items-center text-zinc-50 bg-zinc-700 px-2 font-bold rounded-md space-x-1">
+      <a className="flex flex-col items-start p-4 bg-white shadow-sm border rounded-md">
+        <div className="flex items-center text-zinc-50 bg-gradient-to-r from-pink-500 to-purple-500 px-2 font-bold rounded-md space-x-1">
           <HiLightningBolt />
           <p>Featured Post</p>
         </div>
 
-        <h3 className="text-3xl text-zinc-50 font-extrabold mt-2">{featuredPost.data.title}</h3>
-        <p className="text-sm text-zinc-200 mt-2">{featuredPost.data.excerpt}</p>
+        <h3 className="text-3xl font-extrabold mt-2">{featuredPost.data.title}</h3>
+        <p className="text-zinc-700 mt-2">{featuredPost.data.excerpt}</p>
 
-        <div className="flex items-start mt-4 text-zinc-200 space-x-2 ">
+        <div className="flex items-start mt-4 space-x-2 ">
           <div className="border-2 border-zinc-700 rounded-full flex flex-col items-start">
             <Image
               alt="Tayte Stokes"
@@ -28,7 +28,7 @@ export const FeaturedPostCard = ({ featuredPost }) => {
             />
           </div>
           <div className="flex flex-col text-sm">
-            <p className="text-white font-bold">Tayte Stokes</p>
+            <p className="font-bold">Tayte Stokes</p>
             <p className="text-xs">{publishedDate}</p>
           </div>
         </div>

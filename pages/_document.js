@@ -6,7 +6,7 @@ class MyDocument extends Document {
         <Head>
           <link rel="shortcut icon" href="/after-thoughts-block-logo.jpg" />
         </Head>
-        <body>
+        <body className="text-zinc-900 bg-zinc-50">
           <Main />
           <NextScript />
         </body>
