@@ -1,21 +1,28 @@
 import React from 'react'
 import { marked } from 'marked'
 
-import { getPostSlugs, getPostBySlug } from '../../utils/blog'
+import { getPostSlugs, getPostBySlug } from '../utils/blog'
 
-import { Layout } from '../../components/Layout'
+import { Layout } from '../components/Layout'
+import { MetaData } from '../components/MetaData'
 
 export default function PostPage({ postContent, postData, slug }) {
   return (
     <Layout>
-      <div className="w-full flex flex-col">
-        <h1 className="text-4xl font-extrabold">{postData.title}</h1>
-      </div>
-
-      <article
-        className="prose prose-invert mt-8 max-w-none"
-        dangerouslySetInnerHTML={{ __html: marked(postContent) }}
-      />
+      <MetaData
+        metaData={{
+          title: `After Thoughts | ${postData.title}`,
+          description: postData.excerpt,
+        }}
+      >
+        <article className="container flex flex-col items-center mx-auto px-4 py-8">
+          <h1 className="text-4xl font-extrabold">{postData.title}</h1>
+          <div
+            className="prose prose-invert mt-16 max-w-none"
+            dangerouslySetInnerHTML={{ __html: marked(postContent) }}
+          />
+        </article>
+      </MetaData>
     </Layout>
   )
 }

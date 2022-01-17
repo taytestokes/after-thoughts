@@ -1,19 +1,23 @@
 import React from 'react'
 import Link from 'next/link'
-import { HiLightningBolt } from 'react-icons/hi'
+import format from 'date-fns/format'
 
 export const PostCard = ({ post }) => {
+  const publishedDateDistance = format(new Date(post.data.publishedAt), 'MMMM dd, yyyy')
+
   return (
-    <Link href={`/blog/${post.slug}`}>
-      <a className="flex flex-col items-start p-4 border border-zinc-600 rounded-md">
-        {post.data.featured ? (
-          <div className="flex items-center font-bold rounded-md space-x-2 mb-2">
-            <HiLightningBolt />
-            <p>Featured Post</p>
-          </div>
-        ) : null}
-        <h3 className="text-xl font-extrabold">{post.data.title}</h3>
-        <p className="text-zinc-400 mt-2">{post.data.excerpt}</p>
+    <Link href={`/${post.slug}`}>
+      <a className="flex flex-col lg:flex-row items-start">
+        <div className="w-full lg:w-1/4 text-neutral-300">
+          <span>{publishedDateDistance}</span>
+        </div>
+
+        <div className="w-full lg:w-3/4 flex flex-col lg:px-2 ">
+          <h2 className="text-white text-2xl font-bold mt-4 lg:mt-0 leading-none">
+            {post.data.title}
+          </h2>
+          <span className="text-neutral-300 mt-4">{post.data.excerpt}</span>
+        </div>
       </a>
     </Link>
   )

@@ -1,16 +1,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Markdown Syles */
-.markdown {
-  @apply w-full leading-loose;
-}
-
-.markdown h2 {
-  @apply text-2xl font-bold pb-6;
-}
-
-.markdown p {
-  @apply text-zinc-700 pb-6;
-}

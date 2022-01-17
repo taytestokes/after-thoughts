@@ -1,8 +1,8 @@
 ---
 title: 'Welcome to After Thoughts'
 publishedAt: '2021-12-31'
+author: 'Tayte Stokes'
 excerpt: 'After Thoughts is a software development blog created to empower other developers.'
-image: '/posts/welcome-to-after-thoughts/banner.png'
 featured: true
 ---
 
