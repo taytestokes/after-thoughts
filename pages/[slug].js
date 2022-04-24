@@ -15,7 +15,7 @@ export default function PostPage({ postContent, postData, slug }) {
           description: postData.excerpt,
         }}
       >
-        <article className="container flex flex-col items-center mx-auto px-4 py-8">
+        <article className="container flex flex-col mx-auto px-4 py-8">
           <h1 className="text-4xl font-extrabold">{postData.title}</h1>
           <div
             className="prose prose-invert mt-16 max-w-none"
