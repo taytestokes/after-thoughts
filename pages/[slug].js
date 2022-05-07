@@ -18,7 +18,7 @@ export default function PostPage({ postContent, postData, slug }) {
         <article className="container flex flex-col mx-auto px-4 py-8">
           <h1 className="text-4xl font-extrabold">{postData.title}</h1>
           <div
-            className="prose prose-invert mt-16 max-w-none"
+            className="prose prose-invert prose-pre:bg-zinc-900 mt-8"
             dangerouslySetInnerHTML={{ __html: marked(postContent) }}
           />
         </article>

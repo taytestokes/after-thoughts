@@ -1,0 +1,315 @@
+---
+title: 'Pattern Matching In Elixir'
+publishedAt: '2022-05-07'
+author: 'Tayte Stokes'
+excerpt: "An introduction to Elixir's unique pattern matching behavior"
+featured: true
+---
+
+In Elixir, there's a concept that's known as _pattern matching_ and it's one of the behaviors that makes this language so unique.
+
+In most standard programming languages the = is known as the assignment operator. For example, in Javascript when we want to store a value to a specific namespace in memory that can be referenced, we will create a variable and use the assignment operator to assign a value to that variable.
+
+```
+const foo = 'bar'
+```
+
+Now when reference the variable foo within our code, we will retrieve the string value of bar.
+
+```
+console.log(foo)
+
+'bar'
+```
+
+When we do something very in similar in Elixir, it might seem like the same assignment operation is happening.
+
+```
+foo = "bar"
+```
+
+It's easy to look at the example above and think "Oh, it looks like we are assigning the string value of bar to the variable foo" which technically it does, but that's only if the variable is the operand on the left side of the = operator. What happens if we were to swap the operands?
+
+```
+"bar" = foo
+```
+
+In the world of Javascript, we would expect to get an error because we can't execute an assignment operation on a data type.
+
+In Elixir, we aren't executing an assignment operation but rather a match operation.
+
+It's important to note that Elixir will treat this match operation a little differently depending on if there is a variable on the left side of the match operator versus if there is a variable on the right side of the match operator.
+
+An assignement assertion will be made only if the variable is the left operand of the match operator.
+
+Elixir will look to both sides of the operator and check to see if value of the operand on the right side matches the value of the operand on the left side.
+
+If both of the values match, it will return the value. If they don't, it will return a match error.
+
+```
+foo = "bar"
+
+# "bar"
+
+"bar" = foo
+
+# "bar"
+
+"foo" = foo
+
+** (MatchError) no match of right hand side value: "bar"
+```
+
+Now that we've seen pattern matching in action with a simple data type like a string, let's check out how pattern matching can be accomplished with more complex data types.
+
+## Pattern Matching With Maps
+
+Maps in Elixir are pretty similar to what object literals are in Javascript. They are a key-value store and are the "go to" data structure in Elixir for storing values.
+
+We can pattern match on maps similar to how we were able to on strings.
+
+```
+user = %{first: "tayte", last: "stokes"}
+
+%{first: "tayte", last: "stokes"} = user
+```
+
+Above we are creating a new map and assigning it to the user variable and then we create another map that matches the key-value pairs exactly to the user map and then make a pattern matching assertion between the two maps.
+
+After seeing how a pattern match is asserted with maps, I think it's a good time to talk about another powerful mechanism that be accomplished through this assertion, which is destructering.
+
+Destructering is a mechanism we can utlize to capture values from other pieces of data and assign them to a brand new variable.
+
+Let's say we want to use the user map that was created in the above example, but we want to extract the first and last name and store the values into their own variables.
+
+```
+user = %{first: "tayte", last: "stokes"}
+
+%{first: first_name, last: last_name} = user
+
+IO.inspect(first_name)
+
+"tayte"
+
+IO.inspect(last_name)
+
+"stokes"
+```
+
+There's a few things going on in the example above.
+
+Elixir is first asserting a pattern match operation against the two maps and since we are including variables on the left side, it will capture values from the user map and assign them to the new variables.
+
+If we were to inspect the value of the two new variables, we would see that they consist of the first and last name values from the user map.
+
+We are able to validate that the two maps match in their key-value pair structure and then extract and isolate data from it. Pretty cool right?
+
+If the structure of the map for the key-value pairs didn't match, we would encounter a match error.
+
+```
+user = %{first: "tayte", last: "stokes"}
+
+%{first_name: first_name, last_name: last_name} = user
+
+** (MatchError) no match of right hand side value: %{first: "tayte", last: "stokes"}
+```
+
+Notice how the keys for the two maps differ, so the assertion for the pattern match failed and couldn't continue the execution of destructering those values.
+
+There are also a few gotchas when pattern matching on map data types.
+
+We can pattern match an empty map to another map that contains key-value fields and it will pass the assertion.
+
+```
+user = %{first: "tayte", last: "stokes"}
+
+%{} = user
+
+%{first: "tayte", last: "stokes"}
+```
+
+I personally can't think of too many use cases for this other than wanting to validate that the data type is a map.
+
+Another gotcha is that we don't need to provide every key-value pair when pattern matching map data types.
+
+```
+user = %{first: "tayte", last: "stokes"}
+
+%{first: "tayte"} = user
+
+%{first: "tayte", last: "stokes"}
+```
+
+I believe this was designed to help create brevity when wanting match for a certain key-value pair without having to define all key-value pairs in a map.
+
+This can be pretty handy sometimes. For example, when we only want to check the first name property of a user map that contains over twenty key-values pairs.
+
+I definitely wouldn't want to type that out.
+
+## Pattern Matching Lists
+
+Lists are another data type in Elixir which can be comparable to Arrays in other programming languages, but they aren't necessarily the same thing.
+
+Underneath the hood they work quite differently.
+
+Lists in Elixir are implementations of a linked list data structure and executes operations and consumes memory very differently than how an Array data structure would.
+
+We can execute pattern matching on lists pretty similar to how we've seen it done before with other data types, but it works a little bit different.
+
+If we were to try and pattern match an empty list to a list that contains mutliple values, we would run into a match error.
+
+```
+[] = [1,2,3,4,5]
+
+** (MatchError) no match of right hand side value: [1, 2, 3, 4, 5]
+```
+
+Unlike how Elixir handles pattern matching for an empty map with another map that contains key-value fiels, it will expect the list that is on the right side of the match operator to also be an empty list.
+
+This is because the position of the values inside a list matter.
+
+If those values did match, we would see a successful pattern match assertion.
+
+```
+[1, 2, 3, 4, 5] = [1, 2, 3, 4, 5]
+
+[1, 2, 3, 4, 5]
+```
+
+If we only wanted to match for the first and last values inside of the list, we could provide an underscore to represent that Elixisr should ignore the value at that position.
+
+Using an underscore to denote that we don't care about a certain value is a pretty common practice in software development.
+
+```
+[1, _, _, _, 5] = [1, 2, 3, 4, 5]
+
+[1, 2, 3, 4, 5]
+```
+
+We can also destructure values and assign them to new variables as well.
+
+We just need to make sure that the variable is in the same position as the value we want to capture and is on the left side of the match operator.
+
+```
+[1, a, b, c, 5] = [1, 2, 3, 4, 5]
+
+IO.inspect(a)
+
+2
+
+IO.inspect(b)
+
+3
+
+IO.inspect(c)
+
+4
+```
+
+Another approach we can take to destructering values, is to take the head and the tail of the list.
+
+The first value in a list is often referred to as the head and the remaining values are referred to as the tail of the list.
+
+```
+[head | tail] = [1, 2, 3, 4, 5]
+
+IO.inspect(head)
+
+1
+
+IO.inspect(tail)
+
+[2, 3, 4, 5]
+```
+
+It's also important to notice the syntax for this assertion.
+
+We need to use the special pipe operator when wanting to destructure the head and tail.
+
+## Pattern Matching With Tuples
+
+A tuple is another data type in Elixir that is used to group together values that aren't in a key-value pair format.
+
+I believe tuples are one of the easiest data types to pattern match.
+
+I think that by now with what we have discussed, showing a simple example of pattern matching and destructering a tuple is enough to demonstrate how it works.
+
+```
+tuple = {:name, "tayte", [1,2,3]}
+
+{:name, "tayte", [1,2,3]} = tuple
+
+{:name, _, [1,2,3]} = tuple
+
+{first_name, _, _} = tuple
+
+IO.inspect(first_name)
+
+:name
+```
+
+All of the examples above are valid pattern matching assertions being made.
+
+We need to make sure we match the structure of the tuple just like a list and that is why we can use an underscore again to denote that we can ignore a value at a certain position within the tuple that we are matching against.
+
+However, just like lists, we can't perform a pattern match on an empty tuple to another tuple that contains data.
+
+```
+tuple = {:name, "tayte", [1,2,3]}
+
+{} = tuple
+
+** (MatchError) no match of right hand side value: {:name, "tayte", [1, 2, 3]}
+```
+
+## Pin Operator
+
+Another important operator to talk about here since it's pretty powerful and is used with variables is the pin operator.
+
+In Elixir, when we define a variable and assign it a value, that variable can be reassigned with another value.
+
+I know, kind of a controversial topic due to the nature of Elixir's functional programming style.
+
+What happens when we want to make sure that the variable can never be reassigned to another value?
+
+In other languages such as Javascript, we use specific keywords when defining a variable to instruct how that variable should behave.
+
+In Javascript for example, we can define a new variable using the const keyword to indicate that the variable should never be reassigned and will throw errors when that reassignment tries to happen.
+
+```
+const name = "tayte"
+
+name = "stokes"
+
+Uncaught TypeError: Assignment to constant variable.
+```
+
+So, how do we do that in Elixir? This is where the pin operator comes into play.
+
+We can indicate that variables should not be reassigned by prepending a caret symbol to an existing variable when we reference it.
+
+```
+name = "tayte"
+
+^name = "stokes"
+
+** (MatchError) no match of right hand side value: "stokes"
+```
+
+This is a powerful operator that we can use, especially when it comes pattern matching and preventing reassignment during the match assertion.
+
+## Resources
+
+[Elixir Lang Documentation - Pattern Matching](https://elixir-lang.org/getting-started/pattern-matching.html)
+
+[Knowthen Elixir Course - Pattern Matching](https://courses.knowthen.com/courses/elixir-and-phoenix-for-beginners/lectures/10204839)
+
+[Elixir School - Pattern Matching](https://elixirschool.com/en/lessons/basics/pattern_matching)
+
+[Joy Of Elixir - Pattern Matching](https://joyofelixir.com/6-pattern-matching)
+
+[MDN - Assignemnt Operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Assignment)
+
+[MDN - Expressions and Operators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators)
+
+[W3Schools - Javascript Variables](https://www.w3schools.com/js/js_variables.asp)
