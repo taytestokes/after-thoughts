@@ -7,7 +7,7 @@ export const PostCard = ({ post }) => {
 
   return (
     <Link href={`/${post.slug}`}>
-      <a className="flex flex-col lg:flex-row items-start">
+      <a className="flex flex-col lg:flex-row items-start mb-12">
         <div className="w-full lg:w-1/4 text-neutral-300">
           <span>{publishedDateDistance}</span>
         </div>

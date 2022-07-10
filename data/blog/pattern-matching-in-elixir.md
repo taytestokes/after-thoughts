@@ -3,7 +3,7 @@ title: 'Pattern Matching In Elixir'
 publishedAt: '2022-05-07'
 author: 'Tayte Stokes'
 excerpt: "An introduction to Elixir's unique pattern matching behavior"
-featured: true
+featured: false
 ---
 
 In Elixir, there's a concept that's known as _pattern matching_ and it's one of the behaviors that makes this language so unique.
