@@ -24,7 +24,7 @@ This is where the client submits their user credentials to a server, the server 
 
 Here is flow chart that will help visualize what the process looks like.
 
-> Create and Add Flow Chart Here
+![cookie session auth flow](/session-cookie-auth-flow.png)
 
 This sort of authentication flow comes with a handful of its own benefits and challenges. One of the benefits of this approach is the simplicity of using cookies and server sessions with the built in mechanisms of the browser. However, there are also many challenges which include things such as being more prone to [CSRF attacks](https://owasp.org/www-community/attacks/csrf), scalability issues especially when systems start scaling horizontally, and size limitations since cookies are supposed to be small and can only hold up to a max of 4KB of data.
 
@@ -34,12 +34,10 @@ In a token based authentication flow, the client will submit credentials to the 
 
 Here is another chart that will hopefully help visualize the token based authentication flow.
 
-> Create and Add Flow Chart Here
+![token auth flow](/token-auth-flow.png)
 
 Just like the cookie based session authentication flow, the token based flow comes with its own set of benefits and challenges. Tokens can still be prone to [XSS attacks](https://owasp.org/www-community/attacks/xss/) and can be hijacked. However, a token based authentication approach is much more scalable since we have the client manage that token.
 
-One of the big take away between these two authenticatins flows is that the cookie based session approach is mainly managed by the server and the token based approached is managed by the client.
+The big take away between these two authentication flows is that the cookie based session approach is mainly managed by the server and the token based approached is managed by the client.
 
-Now that we had a brief overview of some authentication flows, let's take a look into how we can implement the token based approached in a Phoenix API using Guardian.
-
-## Configuring Guardian
+Now that we had a brief overview of some authentication flows, let's take a look into how we can implement the token based approached using a access and refresh tokens in a Phoenix API using Guardian.
