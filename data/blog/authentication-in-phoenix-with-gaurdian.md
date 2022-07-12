@@ -24,7 +24,7 @@ This is where the client submits their user credentials to a server, the server 
 
 Here is flow chart that will help visualize what the process looks like.
 
-![cookie session auth flow](/session-cookie-auth-flow.png)
+![cookie session auth flow](/session-auth-flow.png)
 
 This sort of authentication flow comes with a handful of its own benefits and challenges. One of the benefits of this approach is the simplicity of using cookies and server sessions with the built in mechanisms of the browser. However, there are also many challenges which include things such as being more prone to [CSRF attacks](https://owasp.org/www-community/attacks/csrf), scalability issues especially when systems start scaling horizontally, and size limitations since cookies are supposed to be small and can only hold up to a max of 4KB of data.
 
