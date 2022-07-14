@@ -246,6 +246,8 @@ And now we just need to install the dependencies.
 $ mix deps.get
 ```
 
+### Implementation Module
+
 The next step is create an implementation module of Guardian that we will configure our application to use. This module will encapsulate the configuration and behavior that we specifify for Guardian and will expose all of the functions that we will need to encode and sign a new token as well as decode and get the resource from the token.
 
 ```
@@ -306,3 +308,59 @@ config :auth_example, AuthExampleWeb.Auth.Guardian,
 ```
 
 It's not recommended to hard code your secret here, so using something like an environment variable to store that value is recommended so we prevent sharing that secret with the public.
+
+### Guardian Pipeline And Error Handler
+
+The next thing that we need to do is create a pipeline of Guardian plugs to help handle HTTP requests that are made to our API.
+
+This pipeline will watch over the authorization header that is attached to the requests that our API receives and validate the token inside that header to ensure the client that is making the request is authorized.
+
+We will create this pipeline inside that auth directory that we created earlier.
+
+```
+## lib/auth_example_web/auth/pipeline.ex
+
+defmodule AuthExampleWeb.Auth.Pipeline do
+  use Guardian.Plug.Pipeline,
+    otp_app: :auth_example,
+    module: AuthExampleWeb.Auth.Guardian,
+    error_handler: AuthExampleWeb.Auth.ErrorHandler
+
+  plug Guardian.Plug.VerifyHeader, claims: %{"typ" => "access"}, realm: "Bearer"
+  plug Guardian.Plug.EnsureAuthenticated
+end
+```
+
+There first part of this pipeline module is some configuration telling the pipeline which modules should be used and then we set up the stream of plugs that the request will go through.
+
+The first plug is the VerifyHeader plug from Guardian. This looks for the token inside of the authorization header of the request that follows the bearer format.
+
+The second plug is the EnsureAuthenticated plug from Guardian. This plug ensures that the token it has received is valid.
+
+Notice how we are using a module that we have not yet defined, which is the ErrorHandler module. This module will handle the instances where an error occurs during the authentication process.
+
+Lets go ahead an create that inside of the auth directory we created earlier.
+
+```
+## lib/auth_example_web/auth/error_handler.ex
+
+defmodule AuthExampleWeb.Auth.ErrorHandler do
+  import Plug.Conn
+
+  @behaviour Guardian.Plug.ErrorHandler
+
+  @impl Guardian.Plug.ErrorHandler
+
+  def auth_error(conn, {type, _reason}, _opts) do
+    body = Jason.encode!(%{error: to_string(type)})
+
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(401, body)
+  end
+end
+```
+
+Now with all of the Guardian configuration in place we can go ahead and set up our router using the custom pipeline we just created.
+
+## Setting Up Routes
