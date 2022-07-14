@@ -2,7 +2,7 @@
 title: 'Token Authentication Using Guardian In Phoenix'
 publishedAt: '2022-07-10'
 author: 'Tayte Stokes'
-excerpt: 'How to implement a token based authentication system in a Phoenix REST API using Guardian'
+excerpt: 'How to implement a token based authentication system in a Phoenix API using Guardian'
 featured: true
 ---
 
@@ -12,7 +12,7 @@ Guardian is a token based authentication library for use with Elixir application
 
 If you are unfamiliar with JWT's, you should check out [jwt.io](https://jwt.io/introduction/) for a great introduction to JSON Web Tokens.
 
-Before we start diving into the details of implementing Guardian into a Phoenix API, we should first take a look at a few common authentication flows and understand how the flow works for the technique that we will be using.
+<!-- Before we start diving into the details of implementing Guardian into a Phoenix API, we should first take a look at a few common authentication flows and understand how the flow works for the technique that we will be using.
 
 ## Understanding Authentication Flows
 
@@ -55,29 +55,31 @@ Just like the cookie based session authentication flow, the token based flow com
 
 The big take away between these two authentication flows is that the cookie based session approach is mainly managed by the server and the token based approached is managed by the client.
 
-Now that we had a brief overview of some authentication flows, lets take a look into how we can implement the token based approached using a access and refresh tokens in a Phoenix API using Guardian.
+Now that we had a brief overview of some authentication flows, let's take a look into how we can implement the token based approached in a Phoenix API using Guardian. -->
 
 ## Setting Up The Application
 
-First we need to setup a new Phoenix application. If you already have a Phoenix application up and running with user authentication, go ahead and skip this part, but if not it will help get you going.
+First things first, we will scaffold a new Phoenix application that is backed by a database and has the functionality to manage users.
+
+We'll do this by generating a new Phoenix project without the assets folder and html views.
 
 ```
 $ mix phx.new auth_example --no-assets --no-html
 ```
 
-After the new Phoenix application has been generated, we need to use Ecto to setup or database and create a simple users table.
+After the new Phoenix application has been generated, we need to create our database.
 
 ```
 $ mix ecto.create
 ```
 
-Now we will generate a migration to create a simple users table in our database to store our user data.
+Now we will generate a migration to create a simple table for our users in the database.
 
 ```
 $ mix ecto.gen.migration add_users_table
 ```
 
-Now we need to go ahead and setup that migration to add the columns that we want in our users table.
+We need to setup that migration to add the columns and their values that we want in our users table.
 
 ```
 ## priv/repo/migrations/{migration_id}_add_users_table.exs
@@ -98,17 +100,23 @@ defmodule AuthExample.Repo.Migrations.AddUsersTable do
 end
 ```
 
-The migration that we setup is fairly simple. It adds two string columns to the table for the username and password_hash of the user. It's important to note that we will be storing a hash of the user password rather than the actual password for security reasons. It also includes timestamps for when the user record is created and updated. We also include a unique index on the user's username for a quick database lookup.
+The migration that we setup is pretty simple. It will create the users table and the username, password_hash, created_at, and updated_at columns. The updated_at and created_at columns will be added because of that special timestamps function. We also create a unique index on the username column to prevent doing a full table scan while searching for a user by their username.
 
-Now with the migration setup, let's go ahead and actually run that migration against our database.
+It's important to note that we will be storing an encrypted hash of the user password rather than the actual password for security reasons.
+
+Now with the migration setup, let's execute that migration file to make the changes to our database and create the user table.
 
 ```
 $ mix ecto.migrate
 ```
 
-We should now have our users table created. Now we need to setup our user context and schema to handle the transactions made to the database for user records.
+Now we need to create context and schema modules that will be used to manage users in our application.
 
-Let's start by creating the user schema.
+Let's get started by creating our user schema module. The schema module will consist of a few things, the user schema and a function that creates a changeset of the user.
+
+The schema is basically a blueprint of a resource that is used to create a struct that represents that resource, which in our case is the user.
+
+The changeset function is used to create a changeset of the user struct that will be used when our transaction to the database is made. It allows us cast, filter, validate and define constraints when manipulating a struct.
 
 ```
 ## lib/auth_example/users/user
@@ -118,9 +126,9 @@ defmodule AuthExample.Users.User do
   import Ecto.Changeset
 
   schema "users" do
-    field(:username, :string)
-    field(:password, :string, virtual: true)
-    field(:password_hash, :string)
+    field :username, :string
+    field :password, :string, virtual: true
+    field :password_hash, :string
 
     timestamps()
   end
@@ -129,17 +137,20 @@ defmodule AuthExample.Users.User do
     user
     |> cast(attrs, [:username, :password])
     |> validate_required([:username, :password])
+    |> unique_constraint(:username)
   end
 end
 ```
 
-This schema will be used to create Ecto structs that represent the user and will be used to make a transaction with that database. If you look closely, you will notice that we also added the password field and set it to virtual. This is because we want to construct a user struct with the password field and run validations against it, but we don't want it to to be stored in the database.
+If we take a look at our schema module, you can see the user schema definition looks pretty similar to how a user resource looks like in our database. However, we have added the password as a virtual field. This is because we want to construct a user struct with the password field and run validations against it, but we don't want it to to be stored in the database.
 
-The changeset is what will be used to execute validations and modifications to any data on the user struct before making a transaction with the database.
+We have also defined a changeset function that will execute the validations and constraints that we want and return a changeset that was crafted from running those validations against the user struct. Our changeset function currently validates that the username and password fields exist as well as constraining the username to be a unique value. We don't want to hgave multiple users with the same username, that would be confusing.
 
-There's one more thing to call out here, we aren't following any security practices with our password so let's implement a step in the changeset validation to hash the virtual password and set it to the value of the password_hash field before saving the struct as a record to the database.
+There's one more thing to call out here, we aren't following any security practices with how we are storing the password. Let's implement a step in the changeset function to hash the virtual password field on the user struct and set it to the value of the password_hash field before saving the changeset to the database.
 
-We will be using a library called Argon2 to handle hashing the password. Let's go ahead and add it as a dependency at the bottom of the dependency list.
+There's many ways to go about encrypting a password, but we will use a library called Argon2 to handle hashing the password.
+
+Let's get that package added as a dependency to our project.
 
 ```
 ## mix.exs
@@ -151,13 +162,13 @@ defp deps do
 end
 ```
 
-Now let's install that library into our dependencies.
+Now we need to install the newly added Argon2 package.
 
 ```
 $ mix deps.get
 ```
 
-We should now be setup to use hashing functionality from Argon in our user schema module, let's go ahead and add that functionality.
+We should now be ready to use the hashing functionality from Argon2 in our user schema module.
 
 ```
 ## lib/auth_example/users/user
@@ -193,9 +204,11 @@ defmodule AuthExample.Users.User do
 end
 ```
 
-As you can see, we wrote a private function in our module to handle hasing the user password and then we use it as the last step in the changeset to update the password_hash field before saving that data to the database and now our password is securely being stored. We will this password_hash later when we implement user authentication.
+As you can see, we created a private function in our module to handle hasing the user password and then we use it as the last step in the changeset to update the password_hash field before saving the changeset to the database and now our password is securely being stored.
 
-Now we need to create a user context module that will be used as the api that uses our users ecto schema under the hood to make transactions with the database for our user resources.
+Our next step is to create the context module. This module will be used as the api to interact with our user resources.
+
+//TODO: Clean up this module after post is done
 
 ```
 ## lib/auth_example/users.ex
@@ -206,25 +219,48 @@ defmodule AuthExample.Users do
 
   alias AuthExample.Users.User
 
-  def list_users do
+  def get_users do
     Repo.all(User)
   end
 
   def get_user!(id), do: Repo.get!(User, id)
+
+  def get_by_username(username) do
+    query =
+      from(
+        u in User,
+        where: u.username == ^username
+      )
+
+    case Repo.one(query) do
+      nil -> {:error, :not_found}
+      user -> {:ok, user}
+    end
+  end
 
   def create_user(attrs \\ %{}) do
     %User{}
     |> User.changeset(attrs)
     |> Repo.insert()
   end
+
+  def update_user(%User{} = user, attrs) do
+    user
+    |> User.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def delete_user(%User{} = user) do
+    Repo.delete(user)
+  end
 end
 ```
 
-We've included all the basic functionality we will need for interacting with our user resources from the database.
+This module includes functions that we can use for all of the basic functionality to interact with our user resources.
 
-Side note, there is a way to quickly scaffold the schema and context modules for a resource using the content generator mix task that ships with Phoenix. You can read more about it [here](https://hexdocs.pm/phoenix/Mix.Tasks.Phx.Gen.Context.html).
+<!-- Left off here -->
 
-Now with our application backed by a database and ready to handle user resources, we are ready to start implementing our authentication process in our Phoenix API using Guardian. Before we start setting up our routes and endpoints to handle requests, let's take a look into installing and configuring Guardian in our application.
+Now with our application backed by a database and ready to interact with user resources, we are ready to start implementing our authentication process in our Phoenix API using Guardian. Before we start setting up our routes and endpoints to handle requests, let's take a look into installing and configuring Guardian in our application.
 
 ## Guardian Installation And Configuration
 
@@ -365,9 +401,7 @@ Now with all of the Guardian configuration in place we can go ahead and set up o
 
 ## Setting Up Routes
 
-We will use the custom pipeline that we just created to help with handling routes that should only be accessed from an authenticated user as well as routes for users to register and login to our application.
-
-First, let's define that pipeline that utlizes our custom pipeline and then add it a scope of routes that we only want authenticated users to hit.
+We will use the custom pipeline that we just created to help with handling routes that should only be accessed from an authenticated user as well as routes for users to login and sign out of our application.
 
 ```
 ## lib/auth_example_web/router.ex
@@ -384,24 +418,24 @@ end
 scope "/api", AuthExampleWeb do
     pipe_through :api
 
-    scope "/auth" do
-        post "/login", AuthController, :login
-        post "/register", AuthController, :register
-    end
+    post "/login", AuthController, :login
+    post "/register", AuthConrtoller, :register
 end
 
 # Protected API Endpouints
-    scope "/api", AuthExampleWeb do
+scope "/api", AuthExampleWeb do
     pipe_through [:api, :auth]
 
-    scope "/auth" do
-        delete "/signout", AuthController, :sign_out
-    end
+    get "/signout", AuthController, :sign_out
 end
 ```
 
-We just setup some public and private routes that are scoped to the auth endpoint of our api using our auth pipeline which utilizes the Guardian plugs.
+<!-- Figure out a good example for making an authenticated request. Probably update? -->
 
-We are also referencing a controller and actions on that controller that doesn't exist yet to handle the requests made to those endpoints. Lets go ahead and create that auth controller and the functionallity needed.
+We have two scopes created for our API, a public scope and a private scope. The public can be accessed by any client making a request to this API and the private scope utilizes the auth pipeline we created which uses the stream of Guardian plugs we setup to ensure that only authenticated clients can make a request to those routes.
+
+This is a pretty simple example, but in the public routes we will be able to login or register as a user and recieve a token and then we will we will be able to use that token to validate we are authenticated to make a request to sign out.
+
+We are also referencing a controller and actions on that controller that doesn't exist yet to handle the requests made to those endpoints. Let's go ahead and create that controller and the functionallity needed to handle the requests.
 
 ## Setting Up The Auth Controller
