@@ -133,9 +133,9 @@ defmodule AuthExample.Users.User do
 end
 ```
 
-This schema will be used to create Ecto structs that represent the user and will be used to make a transaction with that database. If you look closely, you will notice that we also added the password field and set it to virtual. This is because we want to construct a User Ecto struct with the password field and run validations against it, but we don't want it to to be stored in the database.
+This schema will be used to create Ecto structs that represent the user and will be used to make a transaction with that database. If you look closely, you will notice that we also added the password field and set it to virtual. This is because we want to construct a user struct with the password field and run validations against it, but we don't want it to to be stored in the database.
 
-The changeset is what will be used to execute validations and modifications to any data on the User struct before making a transaction with the database.
+The changeset is what will be used to execute validations and modifications to any data on the user struct before making a transaction with the database.
 
 There's one more thing to call out here, we aren't following any security practices with our password so let's implement a step in the changeset validation to hash the virtual password and set it to the value of the password_hash field before saving the struct as a record to the database.
 
@@ -217,28 +217,92 @@ defmodule AuthExample.Users do
     |> User.changeset(attrs)
     |> Repo.insert()
   end
+end
+```
 
-  def update_user(%User{} = user, attrs) do
-    user
-    |> User.changeset(attrs)
-    |> Repo.update()
+We've included all the basic functionality we will need for interacting with our user resources from the database.
+
+Side note, there is a way to quickly scaffold the schema and context modules for a resource using the content generator mix task that ships with Phoenix. You can read more about it [here](https://hexdocs.pm/phoenix/Mix.Tasks.Phx.Gen.Context.html).
+
+Now with our application backed by a database and ready to handle user resources, we are ready to start implementing our authentication process in our Phoenix API using Guardian. Before we start setting up our routes and endpoints to handle requests, let's take a look into installing and configuring Guardian in our application.
+
+## Guardian Installation And Configuration
+
+We'll get started by adding Guardian as a dependency to our application.
+
+```
+## mix.exs
+
+defp deps do
+  [
+    {:guardian, "~> 2.2"},
+  ]
+end
+```
+
+And now we just need to install the dependencies.
+
+```
+$ mix deps.get
+```
+
+The next step is create an implementation module of Guardian that we will configure our application to use. This module will encapsulate the configuration and behavior that we specifify for Guardian and will expose all of the functions that we will need to encode and sign a new token as well as decode and get the resource from the token.
+
+```
+## lib/auth_example_web/auth/guardian.ex
+
+defmodule ExampleAuthWeb.Auth.Guardian do
+  use Guardian, otp_app: :example_auth
+
+  alias ExampleAuth.Models.Users
+
+  def subject_for_token(resource, _claims) do
+    {:ok, to_string(resource.id)}
   end
 
-  def delete_user(%User{} = user) do
-    Repo.delete(user)
-  end
-
-  def change_user(%User{} = user, attrs \\ %{}) do
-    User.changeset(user, attrs)
+  def resource_from_claims(claims) do
+    resource = Users.get_user!(claims["sub"])
+    {:ok, resource}
+  rescue
+    Ecto.NoResultsError -> {:error, :resource_not_found}
   end
 end
 ```
 
-We've included all the basic functionality we will need to have a full CRUD protocol for interacting with our user resources from the database.
+There are a few modules that we will create to implement Guardian in our app, so I created an auth directory inside of the web directory to house these modules.
 
-If you're wondering, this set of functionality actually comes from generating a context for the user resource, which is a quick way to scaffold the context and schema for a resource in Phoenix. You can read more about it [here](https://hexdocs.pm/phoenix/Mix.Tasks.Phx.Gen.Context.html).
+Lets breakdown what's going on inside of the implementation module. There are two callback functions required to correctly implement Guardian, these are the subject_for_token/2 and resource_from_claims/2 functions.
 
-Now with our application backed by a database and ready to handle user resources, we are ready to start implementing our authentication process in our Phoenix API.
+The subject_for_token/2 is used to encode the resource into a token as the subject, in our case it will be the user id. This function will receive the resource that we want to encode into a token and a set of claims, we won't be using the claims so we can signify that it won't be used by prefixing that parameter with an underscore. We should store a value that will be useful in getting the related resource later on, so something like the resources unique id will be perfect for this.
 
-<!--
-The next step is create an implementation module of Guardian that we will configure our application to use. This module will encapsulate the onfiguration and behavior that we specifify for Guardian and will expose all of the functions that we will need to encode and sign a new token as well as decode and get the resource from the token. -->
+The resource_from_claims/2 is the inverse of subject_for_token/2. We will get the subject of the token from the claims that it receives as an argument and we can use that subject, which is the id of the user in our case, to aggregate that resource from the database.
+
+Now with the implementation module created, we need to configure our application to use it.
+
+```
+## config/config.exs
+
+config :auth_example, AuthExampleWeb.Auth.Guardian,
+  issuer: "auth_example",
+  secret_key: ""
+```
+
+Notice how the secret_key field is empty. Since we are using JWT for our token type, we need to provide a secret that will be used when we encode a new token.
+
+This secret can be any string, but it's recommended that we use guardian secret generator mix task to generate a secret for us.
+
+```
+$ mix guardian.gen.secret
+```
+
+That mix task should print out a secret that we can use in our console. Go ahead and copy and paste that into the configuration.
+
+```
+## config/config.exs
+
+config :auth_example, AuthExampleWeb.Auth.Guardian,
+  issuer: "auth_example",
+  secret_key: "ap+tSlAWkSA8zTLLvZW+vY4mePQFmrFgl//OCAWMSVDrQ5mYk/arko3rru8L9Zqn"
+```
+
+It's not recommended to hard code your secret here, so using something like an environment variable to store that value is recommended so we prevent sharing that secret with the public.
