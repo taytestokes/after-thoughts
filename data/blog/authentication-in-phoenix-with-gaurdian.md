@@ -364,3 +364,44 @@ end
 Now with all of the Guardian configuration in place we can go ahead and set up our router using the custom pipeline we just created.
 
 ## Setting Up Routes
+
+We will use the custom pipeline that we just created to help with handling routes that should only be accessed from an authenticated user as well as routes for users to register and login to our application.
+
+First, let's define that pipeline that utlizes our custom pipeline and then add it a scope of routes that we only want authenticated users to hit.
+
+```
+## lib/auth_example_web/router.ex
+
+pipeline :api do
+    plug :accepts, ["json"]
+end
+
+pipeline :auth do
+    plug AuthExampleWeb.Auth.Pipeline
+end
+
+# Public API Endpoints
+scope "/api", AuthExampleWeb do
+    pipe_through :api
+
+    scope "/auth" do
+        post "/login", AuthController, :login
+        post "/register", AuthController, :register
+    end
+end
+
+# Protected API Endpouints
+    scope "/api", AuthExampleWeb do
+    pipe_through [:api, :auth]
+
+    scope "/auth" do
+        delete "/signout", AuthController, :sign_out
+    end
+end
+```
+
+We just setup some public and private routes that are scoped to the auth endpoint of our api using our auth pipeline which utilizes the Guardian plugs.
+
+We are also referencing a controller and actions on that controller that doesn't exist yet to handle the requests made to those endpoints. Lets go ahead and create that auth controller and the functionallity needed.
+
+## Setting Up The Auth Controller
