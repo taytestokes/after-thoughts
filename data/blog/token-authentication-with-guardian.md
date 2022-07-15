@@ -12,7 +12,7 @@ Guardian is a token based authentication library for use with Elixir application
 
 If you are unfamiliar with JWT's, you should check out [jwt.io](https://jwt.io/introduction/) for a great introduction to JSON Web Tokens.
 
-<!-- Before we start diving into the details of implementing Guardian into a Phoenix API, we should first take a look at a few common authentication flows and understand how the flow works for the technique that we will be using.
+Before we start diving into the details of implementing Guardian into a Phoenix API, we should first take a look at a few common authentication flows and understand how the flow works for the technique that we will be using.
 
 ## Understanding Authentication Flows
 
@@ -31,7 +31,7 @@ In more traditional web applications, a cookie based server session authenticati
 
 Here is flow chart that will help visualize what the process looks like.
 
-![cookie session auth flow](/session-auth-flow.png)
+![cookie session auth flow](/blog/token-authentication-with-guardian/session-auth-flow.png)
 
 This sort of authentication flow comes with a handful of its own benefits and challenges. One of the benefits of this approach is the simplicity of using cookies and server sessions with the built in mechanisms of the browser. However, there are also many challenges which include things such as being more prone to [CSRF attacks](https://owasp.org/www-community/attacks/csrf), scalability issues especially when systems start scaling horizontally, and size limitations since cookies are supposed to be small and can only hold up to a max of 4KB of data.
 
@@ -49,13 +49,13 @@ In more modern web applications, a token based authentication flow is more commo
 
 Here is another chart that will hopefully help visualize the token based authentication flow.
 
-![token auth flow](/token-auth-flow.png)
+![token auth flow](/blog/token-authentication-with-guardian/token-auth-flow.png)
 
 Just like the cookie based session authentication flow, the token based flow comes with its own set of benefits and challenges. Tokens can still be prone to [XSS attacks](https://owasp.org/www-community/attacks/xss/) and can be hijacked. However, a token based authentication approach is can often be much more scalable since we have the client manage that token.
 
 The big take away between these two authentication flows is that the cookie based session approach is mainly managed by the server and the token based approached is managed by the client.
 
-Now that we had a brief overview of some authentication flows, let's take a look into how we can implement the token based approached in a Phoenix API using Guardian. -->
+Now that we had a brief overview of some authentication flows, let's take a look into how we can implement the token based approached in a Phoenix API using Guardian.
 
 ## Setting Up The Application
 
@@ -541,3 +541,48 @@ defmodule AuthExampleWeb.Router do
   end
 end
 ```
+
+With that in place, our application is now ready to handle receiving requests to create new users as well as sign them in. Now, let's go ahead and put Guardian to use by creating private routes that only authenticated users are allowed to hit.
+
+## Authenticated Routes Using Guardian
+
+Remember the pipeline that we created with the VerifyHeaders and EnsureAuthenticated plugs from Guardian? Let's go ahead and now put that to use in our router.
+
+```
+## lib/auth_example_web/router.ex
+
+defmodule AuthExampleWeb.Router do
+  use AuthExampleWeb, :router
+
+  pipeline :api do
+    plug :accepts, ["json"]
+  end
+
+  pipeline :auth do
+    plug AuthExampleWeb.Auth.Pipeline
+  end
+
+  # Public API Routes
+  scope "/api", AuthExampleWeb do
+    pipe_through :api
+
+    post "/register", AuthController, :register
+    post "/signin", AuthController, :sign_in
+  end
+
+  # Private API Routes
+  scope "/api", AuthExampleWeb do
+    pipe_through [:api, :auth]
+
+    # Any route defined here will require a valid token in the authorization header
+    # The route below will only be accessed if a valid token is provided
+    get "/private", PrivateController, :private
+  end
+end
+```
+
+We just created a new auth pipeline that uses the pipeline of Guardian plugs that we created.
+
+We then setup another api scope that uses the auth pipeline that we created. Now, whenever a request is made to an endpount declared in this scope, it will pass the request through the stream of Guardian plugs to ensure that the token is available in the request authorization header and validates the token before moving on.
+
+We now have a working authentication system in place to validate that requests made to our private routes include a valid token.
