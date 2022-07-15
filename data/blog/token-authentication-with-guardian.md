@@ -204,11 +204,9 @@ defmodule AuthExample.Users.User do
 end
 ```
 
-As you can see, we created a private function in our module to handle hasing the user password and then we use it as the last step in the changeset to update the password_hash field before saving the changeset to the database and now our password is securely being stored.
+As you can see, we created a private function in our module to handle hashing the user password and then we use it as the last step in the changeset to update the password_hash field before saving the changeset to the database and now our password is securely being stored.
 
 Our next step is to create the context module. This module will be used as the api to interact with our user resources.
-
-//TODO: Clean up this module after post is done
 
 ```
 ## lib/auth_example/users.ex
@@ -256,15 +254,13 @@ defmodule AuthExample.Users do
 end
 ```
 
-This module includes functions that we can use for all of the basic functionality to interact with our user resources.
+This module includes functions that use the Ecto ORM to query the database. We can use this module for all of the basic functionality to interact with our user resources that are stored in the database.
 
-<!-- Left off here -->
-
-Now with our application backed by a database and ready to interact with user resources, we are ready to start implementing our authentication process in our Phoenix API using Guardian. Before we start setting up our routes and endpoints to handle requests, let's take a look into installing and configuring Guardian in our application.
+Our API is now backed by a database that consists of a users table and is built out to handle managing user resources. We're now ready to start implementing our authentication strategy using Guardian.
 
 ## Guardian Installation And Configuration
 
-We'll get started by adding Guardian as a dependency to our application.
+We first need to add Guardian as a dependency to our application.
 
 ```
 ## mix.exs
@@ -284,34 +280,37 @@ $ mix deps.get
 
 ### Implementation Module
 
-The next step is create an implementation module of Guardian that we will configure our application to use. This module will encapsulate the configuration and behavior that we specifify for Guardian and will expose all of the functions that we will need to encode and sign a new token as well as decode and get the resource from the token.
+The next step is create an implementation module of Guardian that we will configure our application to use.
+
+If you're interested, you can read more about the implementation module [here](https://hexdocs.pm/guardian/introduction-implementation.html).
+
+This module will encapsulate the configuration and behavior that we specifify for Guardian and will expose all of the functions that we will need to encode and sign a new token as well as decode and get the resource from the token.
 
 ```
 ## lib/auth_example_web/auth/guardian.ex
 
-defmodule ExampleAuthWeb.Auth.Guardian do
-  use Guardian, otp_app: :example_auth
+defmodule AuthExampleWeb.Auth.Guardian do
+  use Guardian, otp_app: :auth_example
 
-  alias ExampleAuth.Models.Users
+  alias AuthExample.Users
 
   def subject_for_token(resource, _claims) do
-    {:ok, to_string(resource.id)}
+    subject = to_string(resource.id)
+    {:ok, subject}
   end
 
   def resource_from_claims(claims) do
-    resource = Users.get_user!(claims["sub"])
+    resource = claims["sub"]
     {:ok, resource}
-  rescue
-    Ecto.NoResultsError -> {:error, :resource_not_found}
   end
 end
 ```
 
 There are a few modules that we will create to implement Guardian in our app, so I created an auth directory inside of the web directory to house these modules.
 
-Lets breakdown what's going on inside of the implementation module. There are two callback functions required to correctly implement Guardian, these are the subject_for_token/2 and resource_from_claims/2 functions.
+Let's breakdown what's going on inside of the implementation module. There are two callback functions that are required to correctly implement Guardian, these are the subject_for_token/2 and resource_from_claims/2 functions.
 
-The subject_for_token/2 is used to encode the resource into a token as the subject, in our case it will be the user id. This function will receive the resource that we want to encode into a token and a set of claims, we won't be using the claims so we can signify that it won't be used by prefixing that parameter with an underscore. We should store a value that will be useful in getting the related resource later on, so something like the resources unique id will be perfect for this.
+The subject_for_token/2 is used to encode the resource into a token as the subject, in our case it will be the user id. This function will receive the resource that we want to encode into a token and a set of claims, we won't be using the claims so we can signify that it won't be used by prefixing that parameter with an underscore. We should store a value that will be useful in getting the related resource later on, so something like a unique id for the resource will be perfect.
 
 The resource_from_claims/2 is the inverse of subject_for_token/2. We will get the subject of the token from the claims that it receives as an argument and we can use that subject, which is the id of the user in our case, to aggregate that resource from the database.
 
@@ -321,26 +320,24 @@ Now with the implementation module created, we need to configure our application
 ## config/config.exs
 
 config :auth_example, AuthExampleWeb.Auth.Guardian,
-  issuer: "auth_example",
-  secret_key: ""
+issuer: "auth_example",
+secret_key: ""
 ```
 
-Notice how the secret_key field is empty. Since we are using JWT for our token type, we need to provide a secret that will be used when we encode a new token.
-
-This secret can be any string, but it's recommended that we use guardian secret generator mix task to generate a secret for us.
+Notice how the secret_key field is empty. We need to provide the secret that will be used when we encode a new token. This secret can be any string, but it's recommended that we use guardian to generate a secret for us.
 
 ```
 $ mix guardian.gen.secret
 ```
 
-That mix task should print out a secret that we can use in our console. Go ahead and copy and paste that into the configuration.
+That mix task should print out a secret the console that we can use. Go ahead and copy and paste that into the configuration.
 
 ```
 ## config/config.exs
 
 config :auth_example, AuthExampleWeb.Auth.Guardian,
-  issuer: "auth_example",
-  secret_key: "ap+tSlAWkSA8zTLLvZW+vY4mePQFmrFgl//OCAWMSVDrQ5mYk/arko3rru8L9Zqn"
+issuer: "auth_example",
+secret_key: "ap+tSlAWkSA8zTLLvZW+vY4mePQFmrFgl//OCAWMSVDrQ5mYk/arko3rru8L9Zqn"
 ```
 
 It's not recommended to hard code your secret here, so using something like an environment variable to store that value is recommended so we prevent sharing that secret with the public.
@@ -358,24 +355,24 @@ We will create this pipeline inside that auth directory that we created earlier.
 
 defmodule AuthExampleWeb.Auth.Pipeline do
   use Guardian.Plug.Pipeline,
-    otp_app: :auth_example,
-    module: AuthExampleWeb.Auth.Guardian,
-    error_handler: AuthExampleWeb.Auth.ErrorHandler
+  otp_app: :auth_example,
+  module: AuthExampleWeb.Auth.Guardian,
+  error_handler: AuthExampleWeb.Auth.ErrorHandler
 
-  plug Guardian.Plug.VerifyHeader, claims: %{"typ" => "access"}, realm: "Bearer"
+  plug Guardian.Plug.VerifyHeader
   plug Guardian.Plug.EnsureAuthenticated
 end
 ```
 
 There first part of this pipeline module is some configuration telling the pipeline which modules should be used and then we set up the stream of plugs that the request will go through.
 
-The first plug is the VerifyHeader plug from Guardian. This looks for the token inside of the authorization header of the request that follows the bearer format.
+The first plug is the VerifyHeader plug from Guardian. This looks for the token inside of the authorization header of the request.
 
 The second plug is the EnsureAuthenticated plug from Guardian. This plug ensures that the token it has received is valid.
 
 Notice how we are using a module that we have not yet defined, which is the ErrorHandler module. This module will handle the instances where an error occurs during the authentication process.
 
-Lets go ahead an create that inside of the auth directory we created earlier.
+Let's go ahead an create that inside of the auth directory we created earlier.
 
 ```
 ## lib/auth_example_web/auth/error_handler.ex
@@ -397,45 +394,150 @@ defmodule AuthExampleWeb.Auth.ErrorHandler do
 end
 ```
 
-Now with all of the Guardian configuration in place we can go ahead and set up our router using the custom pipeline we just created.
+Guardian is now configured and we are ready to start building out the controllers and routes that are needed to allow clients to make a request to our API.
 
-## Setting Up Routes
+## Authentication Controller And Routes
 
-We will use the custom pipeline that we just created to help with handling routes that should only be accessed from an authenticated user as well as routes for users to login and sign out of our application.
+We will build out a controller that will handle requests that are related towards authentication. This will primarily consist of registering a new user to our application and allowing them to sign in.
+
+We'll start by building out the register action for the controller to handle new user registration.
 
 ```
-## lib/auth_example_web/router.ex
+## lib/auth_example_web/controllers/auth_controller.ex
 
-pipeline :api do
+defmodule AuthExampleWeb.AuthController do
+  use AuthExampleWeb, :controller
+
+  alias AuthExample.Users
+  alias AuthExampleWeb.Auth.Guardian
+
+  def register(conn, %{"user" => user_params}) do
+    case Users.create_user(user_params) do
+      {:ok, user} ->
+        {:ok, token, _claims} = Guardian.encode_and_sign(user)
+
+        render(conn, "token.json", token: token)
+    end
+  end
+end
+```
+
+For the purpose of this example, the register action is pretty simple. It will receive the user credentials from the request and create a new user. If the user creation was successful, we use that user to create a new token and then render a json view to send the new token back to the client.
+
+We currently don't have the json view setup, so let's go ahead and create that.
+
+```
+## lib/auth_example_web/views/auth_view.ex
+
+defmodule AuthExampleWeb.AuthView do
+  use AuthExampleWeb, :view
+
+  def render("token.json", %{token: token}) do
+    %{token: token}
+  end
+end
+```
+
+We should now successfully return a token to the client when a request is made to register a new user.
+
+If we want this register route to be reachable, we need to configure a route for it. Let's go ahead and setup our routes.
+
+```
+## lib/auth_example/router.ex
+
+defmodule AuthExampleWeb.Router do
+  use AuthExampleWeb, :router
+
+  pipeline :api do
     plug :accepts, ["json"]
-end
+  end
 
-pipeline :auth do
-    plug AuthExampleWeb.Auth.Pipeline
-end
-
-# Public API Endpoints
-scope "/api", AuthExampleWeb do
+  scope "/api", AuthExampleWeb do
     pipe_through :api
 
-    post "/login", AuthController, :login
-    post "/register", AuthConrtoller, :register
-end
-
-# Protected API Endpouints
-scope "/api", AuthExampleWeb do
-    pipe_through [:api, :auth]
-
-    get "/signout", AuthController, :sign_out
+    post "/register", AuthController, :register
+  end
 end
 ```
 
-<!-- Figure out a good example for making an authenticated request. Probably update? -->
+We can now start making requests to our API to register a new user to receive a token.
 
-We have two scopes created for our API, a public scope and a private scope. The public can be accessed by any client making a request to this API and the private scope utilizes the auth pipeline we created which uses the stream of Guardian plugs we setup to ensure that only authenticated clients can make a request to those routes.
+With user registration implemented, we now want a way to sign users in. Let's create an action in our auth controller to handle that.
 
-This is a pretty simple example, but in the public routes we will be able to login or register as a user and recieve a token and then we will we will be able to use that token to validate we are authenticated to make a request to sign out.
+```
+## lib/auth_example_web/controllers/auth_controller.ex
 
-We are also referencing a controller and actions on that controller that doesn't exist yet to handle the requests made to those endpoints. Let's go ahead and create that controller and the functionallity needed to handle the requests.
+defmodule AuthExampleWeb.AuthController do
+  use AuthExampleWeb, :controller
 
-## Setting Up The Auth Controller
+  alias AuthExample.Users
+  alias AuthExampleWeb.Auth.Guardian
+
+  def register(conn, %{"user" => user_params}) do
+    case Users.create_user(user_params) do
+      {:ok, user} ->
+        {:ok, token, _claims} = Guardian.encode_and_sign(user)
+
+        render(conn, "token.json", token: token)
+    end
+  end
+
+  def sign_in(conn, %{"user" => user_params}) do
+    case Users.get_by_username(user_params["username"]) do
+      {:ok, user} ->
+        case Users.authenticate_user(user, user_params["password"]) do
+          {:ok, token, _claims} ->
+            render(conn, "token.json", token: token)
+        end
+    end
+  end
+end
+```
+
+With the new sign_in action that we just created, we will query the database for the user with the username that was provided in the request params. If the user is found, we will authenticate that the user is valid by hashing the password sent through the request and matching it against the stored hashed password for the user. If the authentication is valid, then we create a new token using the user and send it back to the client.
+
+However, we currently don't have the authenticate_user function, so let's go ahead and create that. Since this is related to a managing a user resource, the context module for our users would be a great place to put this functionality.
+
+```
+defmodule AuthExample.Users do
+  import Ecto.Query
+  alias AuthExample.Repo
+
+  alias AuthExample.Users.User
+  alias AuthExampleWeb.Auth.Guardian
+
+  ...
+
+  def authenticate_user(user, password) do
+    case Argon2.verify_pass(password, user.password_hash) do
+      true ->
+        Guardian.encode_and_sign(user)
+      _ ->
+        {:error, :unauthorized}
+    end
+  end
+end
+```
+
+Inside of our context module, we alias our Guardian implementation module to easily reference. We then create the authenticate_user function that uses Argon2 to verify that the password matches after being hashed and then we use Guardian to encode and sign a new token using the user. It's pretty simple, but powerful.
+
+Now that the sign_in action and the logic to authenticate a user has been created, we now need to add a route to allow our client to make a request to sign in.
+
+```
+## lib/auth_example/router.ex
+
+defmodule AuthExampleWeb.Router do
+  use AuthExampleWeb, :router
+
+  pipeline :api do
+    plug :accepts, ["json"]
+  end
+
+  scope "/api", AuthExampleWeb do
+    pipe_through :api
+
+    post "/register", AuthController, :register
+    post "/signin", AuthController, :sign_in
+  end
+end
+```
