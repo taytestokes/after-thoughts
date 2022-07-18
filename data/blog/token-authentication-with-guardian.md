@@ -12,50 +12,7 @@ Guardian is a token based authentication library for use with Elixir application
 
 If you are unfamiliar with JWT's, you should check out [jwt.io](https://jwt.io/introduction/) for a great introduction to JSON Web Tokens.
 
-Before we start diving into the details of implementing Guardian into a Phoenix API, we should first take a look at a few common authentication flows and understand how the flow works for the technique that we will be using.
-
-## Understanding Authentication Flows
-
-There are a few common authentication flows that web applications will follow. These flows typically follow the cookie based server session approach or the web token based strategy.
-
-### Cookie Based Session Flow
-
-In more traditional web applications, a cookie based server session authentication flow is more apparent.
-
-1. The client submits a request containing the user credentials to the server
-2. The server authenticates the credentials it has received and stores the related user data in a new session
-3. The server will send a response back to the client with a cookie that contains the id of the session
-4. Every subsequent request from the client to the server will contain the cookie with the session id
-5. The server will collect the user data from the session it has been stored in using the session id received through the cookies
-6. The server will then send an appropiate response with the content that has been requested
-
-Here is flow chart that will help visualize what the process looks like.
-
-![cookie session auth flow](/blog/token-authentication-with-guardian/session-auth-flow.png)
-
-This sort of authentication flow comes with a handful of its own benefits and challenges. One of the benefits of this approach is the simplicity of using cookies and server sessions with the built in mechanisms of the browser. However, there are also many challenges which include things such as being more prone to [CSRF attacks](https://owasp.org/www-community/attacks/csrf), scalability issues especially when systems start scaling horizontally, and size limitations since cookies are supposed to be small and can only hold up to a max of 4KB of data.
-
-### Token Based Flow
-
-In more modern web applications, a token based authentication flow is more common and usually the prefered way to handle authentication.
-
-1. The client submits a request containing the user credentials to the server
-2. The server will authenticate the it has received credentials, get the related user data, and generate a new token with the user data and sign it with a secret
-3. The server will send a response to the client with the token
-4. The client will store the new token either through the clients state management system or local storage
-5. Every subsequent request made to the server that requires authorization will include the token in the authorization header of the request
-6. The server will validate the token it has received through the token signature and then decode the user from the token
-7. The server will then send a response to the client with the content associated to that user
-
-Here is another chart that will hopefully help visualize the token based authentication flow.
-
-![token auth flow](/blog/token-authentication-with-guardian/token-auth-flow.png)
-
-Just like the cookie based session authentication flow, the token based flow comes with its own set of benefits and challenges. Tokens can still be prone to [XSS attacks](https://owasp.org/www-community/attacks/xss/) and can be hijacked. However, a token based authentication approach is can often be much more scalable since we have the client manage that token.
-
-The big take away between these two authentication flows is that the cookie based session approach is mainly managed by the server and the token based approached is managed by the client.
-
-Now that we had a brief overview of some authentication flows, let's take a look into how we can implement the token based approached in a Phoenix API using Guardian.
+Before we start diving into the details of implementing Guardian into a Phoenix API, we should first take a look at a few common authentication flows and understand how the flow works for the technique that we will be using. If you're pretty familiar with the topics, then go ahead and move on. If you're not, then go ahead and give [this](/session-and-token-based-authentication-flows) post a read.
 
 ## Setting Up The Application
 
@@ -573,16 +530,14 @@ defmodule AuthExampleWeb.Router do
   # Private API Routes
   scope "/api", AuthExampleWeb do
     pipe_through [:api, :auth]
-
-    # Any route defined here will require a valid token in the authorization header
-    # The route below will only be accessed if a valid token is provided
-    get "/private", PrivateController, :private
   end
 end
 ```
 
-We just created a new auth pipeline that uses the pipeline of Guardian plugs that we created.
+We just created a new auth pipeline that uses the pipeline of Guardian plugs that we created. We then setup another scope under the /api namespace that uses the auth pipeline that we created. It's important to recognize that there are now two scopes with the same /api namespace, however one scope pipes requests through the auth pipeline that we created which creates a private scope of endpoints that only authenticated users can access.
 
-We then setup another api scope that uses the auth pipeline that we created. Now, whenever a request is made to an endpount declared in this scope, it will pass the request through the stream of Guardian plugs to ensure that the token is available in the request authorization header and validates the token before moving on.
+Whenever a request is made to an endpount declared in the private /api scope, it will pass the request through the stream of Guardian plugs to ensure that the token is available in the request authorization header and validates the token before moving on.
 
-We now have a working authentication system in place to validate that requests made to our private routes include a valid token.
+We currently don't have any endpoints declared in the private /api scope, so let's go ahead and add one and also write the controller and view logic.
+
+<!-- Write endpoint and logic to update a user only when authenticated -->
