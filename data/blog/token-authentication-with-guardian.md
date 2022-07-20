@@ -12,7 +12,7 @@ Guardian is a token based authentication library for use with Elixir application
 
 If you are unfamiliar with JWT's, you should check out [jwt.io](https://jwt.io/introduction/) for a great introduction to JSON Web Tokens.
 
-Before we start diving into the details of implementing Guardian into a Phoenix API, we should first take a look at a few common authentication flows and understand how the flow works for the technique that we will be using. If you're pretty familiar with the topics, then go ahead and move on. If you're not, then go ahead and give [this](/session-and-token-based-authentication-flows) post a read.
+Before we start diving into the details of implementing Guardian into a Phoenix API, we should first take a look at a few common authentication flows and understand how the flows work. If you're pretty familiar with the topics, then go ahead and move on. If you're not, then go ahead and give [this](/session-and-token-based-authentication-flows) post a read.
 
 ## Setting Up The Application
 

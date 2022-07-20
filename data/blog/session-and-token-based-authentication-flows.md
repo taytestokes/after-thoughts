@@ -1,6 +1,6 @@
 ---
 title: 'Session And Token Based Authentication Flows'
-publishedAt: '2022-04-10'
+publishedAt: '2022-05-22'
 author: 'Tayte Stokes'
 excerpt: 'An introduction to the different authentication flows between using a session or token based authentication system'
 featured: false
@@ -42,5 +42,3 @@ Here is another chart that will hopefully help visualize the token based authent
 ![token auth flow](/blog/token-authentication-with-guardian/token-auth-flow.png)
 
 Just like the session authentication flow, the token based flow comes with its own set of benefits and challenges. Tokens can still be prone to [XSS attacks](https://owasp.org/www-community/attacks/xss/) and can be hijacked. However, a token based authentication approach is can often be much more scalable since we have the client manage that token.
-
-The big take away between these two authentication flows is that the server session approach is mainly managed by the server and the token based approached is managed by the client.

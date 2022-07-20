@@ -21,9 +21,14 @@ export async function getStaticProps() {
   const postSlugs = getPostSlugs()
   const posts = getPosts(postSlugs)
 
+  // Sorts the posts by publish date going from latest to oldest
+  const sortedPostsByAscDate = posts.sort((a, b) => {
+    return Number(new Date(b.data.publishedAt)) - Number(new Date(a.data.publishedAt))
+  })
+
   return {
     props: {
-      posts,
+      posts: sortedPostsByAscDate,
     },
   }
 }
