@@ -101,7 +101,7 @@ end
 
 If we take a look at our schema module, you can see the user schema definition looks pretty similar to how a user resource looks like in our database. However, we have added the password as a virtual field. This is because we want to construct a user struct with the password field and run validations against it, but we don't want it to to be stored in the database.
 
-We have also defined a changeset function that will execute the validations and constraints that we want and return a changeset that was crafted from running those validations against the user struct. Our changeset function currently validates that the username and password fields exist as well as constraining the username to be a unique value. We don't want to hgave multiple users with the same username, that would be confusing.
+We have also defined a changeset function that will execute the validations and constraints that we want and return a changeset that was crafted from running those validations against the user struct. Our changeset function currently validates that the username and password fields exist as well as constraining the username to be a unique value. We don't want to have multiple users with the same username, that would be confusing.
 
 There's one more thing to call out here, we aren't following any security practices with how we are storing the password. Let's implement a step in the changeset function to hash the virtual password field on the user struct and set it to the value of the password_hash field before saving the changeset to the database.
 
@@ -541,3 +541,5 @@ Whenever a request is made to an endpount declared in the private /api scope, it
 We currently don't have any endpoints declared in the private /api scope, so let's go ahead and add one and also write the controller and view logic.
 
 <!-- Write endpoint and logic to update a user only when authenticated -->
+
+> This post currently isn't finished. The remainder of this post will be coming soon
