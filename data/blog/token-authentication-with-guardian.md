@@ -626,6 +626,8 @@ end
 
 We are now deriving the Jason.Encoder protocol for our user struct to use and we are only deriving the id and username fields since those are the only fields we want to expose in the response.
 
+If you are interested, you can find out more about deriving protocols [here](https://hexdocs.pm/elixir/Kernel.html#defstruct/1-deriving).
+
 Now when we make an authenticated request for a user, we will receive a response of the user that contains the user's id and username.
 
 ```
