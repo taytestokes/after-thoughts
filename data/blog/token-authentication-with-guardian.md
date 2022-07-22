@@ -1,6 +1,6 @@
 ---
 title: 'Token Authentication Using Guardian In Phoenix'
-publishedAt: '2022-07-10'
+publishedAt: '2022-07-22'
 author: 'Tayte Stokes'
 excerpt: 'How to implement a token based authentication system in a Phoenix API using Guardian'
 featured: true
@@ -10,13 +10,13 @@ Most modern web applications usually require some sort of authentication mechani
 
 Guardian is a token based authentication library for use with Elixir applications. Guardian uses JSON Web Tokens (JWT) by default for the token.
 
-If you are unfamiliar with JWT's, you should check out [jwt.io](https://jwt.io/introduction/) for a great introduction to JSON Web Tokens.
+If you are unfamiliar with JSON Web Tokens, you should check out [jwt.io](https://jwt.io/introduction/) for a great introduction
 
 Before we start diving into the details of implementing Guardian into a Phoenix API, we should first take a look at a few common authentication flows and understand how the flows work. If you're pretty familiar with the topics, then go ahead and move on. If you're not, then go ahead and give [this](/session-and-token-based-authentication-flows) post a read.
 
 ## Setting Up The Application
 
-First things first, we will scaffold a new Phoenix application that is backed by a database and has the functionality to manage users.
+First things first, we will scaffold a new Phoenix API that is backed by a database and has the functionality to manage users.
 
 We'll do this by generating a new Phoenix project without the assets folder and html views.
 
@@ -73,7 +73,7 @@ Let's get started by creating our user schema module. The schema module will con
 
 The schema is basically a blueprint of a resource that is used to create a struct that represents that resource, which in our case is the user.
 
-The changeset function is used to create a changeset of the user struct that will be used when our transaction to the database is made. It allows us cast, filter, validate and define constraints when manipulating a struct.
+The changeset function is used to create an ecto changeset of the user struct that will be used when our transaction to the database is made. It allows us cast, filter, validate and define constraints when manipulating a struct.
 
 ```
 ## lib/auth_example/users/user
@@ -163,7 +163,7 @@ end
 
 As you can see, we created a private function in our module to handle hashing the user password and then we use it as the last step in the changeset to update the password_hash field before saving the changeset to the database and now our password is securely being stored.
 
-Our next step is to create the context module. This module will be used as the api to interact with our user resources.
+Our next step is to create the context module. This module will be used as the public API layer to interact with our user resources.
 
 ```
 ## lib/auth_example/users.ex
@@ -173,10 +173,6 @@ defmodule AuthExample.Users do
   alias AuthExample.Repo
 
   alias AuthExample.Users.User
-
-  def get_users do
-    Repo.all(User)
-  end
 
   def get_user!(id), do: Repo.get!(User, id)
 
@@ -198,22 +194,12 @@ defmodule AuthExample.Users do
     |> User.changeset(attrs)
     |> Repo.insert()
   end
-
-  def update_user(%User{} = user, attrs) do
-    user
-    |> User.changeset(attrs)
-    |> Repo.update()
-  end
-
-  def delete_user(%User{} = user) do
-    Repo.delete(user)
-  end
 end
 ```
 
-This module includes functions that use the Ecto ORM to query the database. We can use this module for all of the basic functionality to interact with our user resources that are stored in the database.
+This module includes functions that use ecto to query the database. We can use this module for all of the basic functionality to interact with our user resources that are stored in the database.
 
-Our API is now backed by a database that consists of a users table and is built out to handle managing user resources. We're now ready to start implementing our authentication strategy using Guardian.
+Our Phoenix API is now backed by a database that consists of a users table and is built out to handle managing user resources. We're now ready to start implementing our authentication strategy using Guardian.
 
 ## Guardian Installation And Configuration
 
@@ -243,6 +229,8 @@ If you're interested, you can read more about the implementation module [here](h
 
 This module will encapsulate the configuration and behavior that we specifify for Guardian and will expose all of the functions that we will need to encode and sign a new token as well as decode and get the resource from the token.
 
+There are a few modules that we will create to implement Guardian in our app, so I created an auth directory inside of the web directory to house these modules.
+
 ```
 ## lib/auth_example_web/auth/guardian.ex
 
@@ -263,8 +251,6 @@ defmodule AuthExampleWeb.Auth.Guardian do
 end
 ```
 
-There are a few modules that we will create to implement Guardian in our app, so I created an auth directory inside of the web directory to house these modules.
-
 Let's breakdown what's going on inside of the implementation module. There are two callback functions that are required to correctly implement Guardian, these are the subject_for_token/2 and resource_from_claims/2 functions.
 
 The subject_for_token/2 is used to encode the resource into a token as the subject, in our case it will be the user id. This function will receive the resource that we want to encode into a token and a set of claims, we won't be using the claims so we can signify that it won't be used by prefixing that parameter with an underscore. We should store a value that will be useful in getting the related resource later on, so something like a unique id for the resource will be perfect.
@@ -281,7 +267,7 @@ issuer: "auth_example",
 secret_key: ""
 ```
 
-Notice how the secret_key field is empty. We need to provide the secret that will be used when we encode a new token. This secret can be any string, but it's recommended that we use guardian to generate a secret for us.
+Notice how the secret_key field is empty. We need to provide the secret that will be used when we encode a new token. This secret can be any string, but it's recommended that we use Guardian to generate a secret for us.
 
 ```
 $ mix guardian.gen.secret
@@ -301,9 +287,9 @@ It's not recommended to hard code your secret here, so using something like an e
 
 ### Guardian Pipeline And Error Handler
 
-The next thing that we need to do is create a pipeline of Guardian plugs to help handle HTTP requests that are made to our API.
+The next thing that we need to do is create a pipeline of Guardian plugs to help handle requests that are made to our API.
 
-This pipeline will watch over the authorization header that is attached to the requests that our API receives and validate the token inside that header to ensure the client that is making the request is authorized.
+This pipeline will watch over the authorization header that is attached to the requests that our API receives and ensure that the authorization token exists and is valid.
 
 We will create this pipeline inside that auth directory that we created earlier.
 
@@ -351,13 +337,13 @@ defmodule AuthExampleWeb.Auth.ErrorHandler do
 end
 ```
 
-Guardian is now configured and we are ready to start building out the controllers and routes that are needed to allow clients to make a request to our API.
+Guardian is now configured and we are ready to start building out the controllers and routes that are needed to allow our API to start receiving requests.
 
 ## Authentication Controller And Routes
 
 We will build out a controller that will handle requests that are related towards authentication. This will primarily consist of registering a new user to our application and allowing them to sign in.
 
-We'll start by building out the register action for the controller to handle new user registration.
+We'll start by building out the register action for the authentication controller to handle new user registration.
 
 ```
 ## lib/auth_example_web/controllers/auth_controller.ex
@@ -381,7 +367,7 @@ end
 
 For the purpose of this example, the register action is pretty simple. It will receive the user credentials from the request and create a new user. If the user creation was successful, we use that user to create a new token and then render a json view to send the new token back to the client.
 
-We currently don't have the json view setup, so let's go ahead and create that.
+We currently don't have the json view setup, so let's create that.
 
 ```
 ## lib/auth_example_web/views/auth_view.ex
@@ -397,7 +383,7 @@ end
 
 We should now successfully return a token to the client when a request is made to register a new user.
 
-If we want this register route to be reachable, we need to configure a route for it. Let's go ahead and setup our routes.
+If we want this register route to be reachable, we need to configure a route for it. Let's go ahead and setup our router.
 
 ```
 ## lib/auth_example/router.ex
@@ -417,9 +403,9 @@ defmodule AuthExampleWeb.Router do
 end
 ```
 
-We can now start making requests to our API to register a new user to receive a token.
+Our API can now start receiving requests to register a new user and receive a token.
 
-With user registration implemented, we now want a way to sign users in. Let's create an action in our auth controller to handle that.
+With user registration implemented, we now want a way to sign users in. Let's create another action in our auth controller to handle that.
 
 ```
 ## lib/auth_example_web/controllers/auth_controller.ex
@@ -499,7 +485,7 @@ defmodule AuthExampleWeb.Router do
 end
 ```
 
-With that in place, our application is now ready to handle receiving requests to create new users as well as sign them in. Now, let's go ahead and put Guardian to use by creating private routes that only authenticated users are allowed to hit.
+With that in place, our API is now ready to handle receiving requests to create new users as well as sign them in. Now, let's go ahead and put Guardian to use again by creating private routes that only authenticated users are allowed to hit.
 
 ## Authenticated Routes Using Guardian
 
@@ -575,7 +561,7 @@ defmodule AuthExampleWeb.UsersController do
 end
 ```
 
-Our users controller is now set up with a single action. The user action will take the id that was sent with the params of the request and use it with the get_user!/1 function to query for a user with that id in the database. Once we have that user, we will render a json view passing the user.
+Our users controller is now set up with a single action. The user action will take the id that was sent with the params of the request and use it with the get_user!/1 function from the user context module to query for a user with that id in the database. Once we have that user, we will render a json view passing the user.
 
 The view has not been setup, so let's create that.
 
@@ -628,13 +614,13 @@ We are now deriving the Jason.Encoder protocol for our user struct to use and we
 
 If you are interested, you can find out more about deriving protocols [here](https://hexdocs.pm/elixir/Kernel.html#defstruct/1-deriving).
 
-Now when we make an authenticated request for a user, we will receive a response of the user that contains the user's id and username.
+Now when we make an authenticated request that contains a valid token for a user, we will receive a response that contains the user's id and username.
 
 ```
 {
   "data": {
     "id": 1,
-    "username": "testuser"
+    "username": "Slick Rick"
   }
 }
 ```
