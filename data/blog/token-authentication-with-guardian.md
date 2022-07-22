@@ -10,7 +10,7 @@ Most modern web applications usually require some sort of authentication mechani
 
 Guardian is a token based authentication library for use with Elixir applications. Guardian uses JSON Web Tokens (JWT) by default for the token.
 
-If you are unfamiliar with JSON Web Tokens, you should check out [jwt.io](https://jwt.io/introduction/) for a great introduction
+If you are unfamiliar with JSON Web Tokens, you should check out [jwt.io](https://jwt.io/introduction/) for a great introduction.
 
 Before we start diving into the details of implementing Guardian into a Phoenix API, we should first take a look at a few common authentication flows and understand how the flows work. If you're pretty familiar with the topics, then go ahead and move on. If you're not, then go ahead and give [this](/session-and-token-based-authentication-flows) post a read.
 
