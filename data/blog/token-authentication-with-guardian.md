@@ -321,7 +321,7 @@ defmodule AuthExampleWeb.Auth.Pipeline do
 end
 ```
 
-There first part of this pipeline module is some configuration telling the pipeline which modules should be used and then we set up the stream of plugs that the request will go through.
+The first part of this pipeline module is some configuration telling the pipeline which modules should be used and then we set up the stream of plugs that the request will go through.
 
 The first plug is the VerifyHeader plug from Guardian. This looks for the token inside of the authorization header of the request.
 
@@ -540,6 +540,101 @@ Whenever a request is made to an endpount declared in the private /api scope, it
 
 We currently don't have any endpoints declared in the private /api scope, so let's go ahead and add one and also write the controller and view logic.
 
-<!-- Write endpoint and logic to update a user only when authenticated -->
+This new endpoint will allow authenticated requests to get a user resource by the id.
 
-> This post currently isn't finished. The remainder of this post will be coming soon
+```
+## lib/auth_example_web/router.ex
+
+defmodule AuthExampleWeb.Router do
+
+  ....
+
+  # Private API Routes
+  scope "/api", AuthExampleWeb do
+    pipe_through [:api, :auth]
+
+    get "/users/:id", UsersController, :user
+  end
+end
+```
+
+We just added the /users/:id route in our private /api scope that uses the auth pipeline to ensure a request to authenticated. This new route uses a new users controller to handle the request. This currently doesn't exist, so let's create it.
+
+```
+## lib/auth_example_web/controllers/users_controller.ex
+
+defmodule AuthExampleWeb.UsersController do
+  use AuthExampleWeb, :controller
+
+  alias AuthExample.Users
+
+  def user(conn, %{"id" => id}) do
+    user = Users.get_user!(id)
+    render(conn, "user.json", user: user)
+  end
+end
+```
+
+Our users controller is now set up with a single action. The user action will take the id that was sent with the params of the request and use it with the get_user!/1 function to query for a user with that id in the database. Once we have that user, we will render a json view passing the user.
+
+The view has not been setup, so let's create that.
+
+```
+## lib/auth_example_web/views/users_view.ex
+
+defmodule AuthExampleWeb.UsersView do
+  use AuthExampleWeb, :view
+
+  def render("user.json", %{user: user}) do
+    %{data: user}
+  end
+end
+```
+
+Now with the view setup, we simply send the client back a response that consists of a map with a data field that will be our user struct.
+
+However, there is just one problem with this. If we make that request right now for a user, our application will actually error out and we will receive an error message that looks like the following.
+
+```
+** (Protocol.UndefinedError) protocol Jason.Encoder not implemented for %AuthExample.Users.User{}
+```
+
+This error message is informing us that the Jason.Encoder protocol is not implemented for our user struct, so we can't parse it as json before sending a response. Even though a struct is a map underneath, by default structs don't implement any of the protocols that are implemented for maps so this is why we are not able to parse the struct into json.
+
+Since we own how these structs are defined and created, we can actually derive the Jason.Encoder protocol for our user structs.
+
+In our user schema file, we can use the @derive module attribute to list the protocols we want to derive from.
+
+```
+## lib/auth_example/users/user.ex
+
+defmodule AuthExample.Users.User do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  @derive {Jason.Encoder, only: [:id, :username]}
+
+  schema "users" do
+    field :username, :string
+    field :password, :string, virtual: true
+    field :password_hash, :string
+
+    timestamps()
+  end
+end
+```
+
+We are now deriving the Jason.Encoder protocol for our user struct to use and we are only deriving the id and username fields since those are the only fields we want to expose in the response.
+
+Now when we make an authenticated request for a user, we will receive a response of the user that contains the user's id and username.
+
+```
+{
+  "data": {
+    "id": 1,
+    "username": "testuser"
+  }
+}
+```
+
+Congrats! We now have a working authentication system in our Phoenix API using Guardian to manage encoding authentication tokens for our application and use custom pipelines that pass the request through a stream of Guardian plugs to ensure that the requester is authenticated before accessing a resource.

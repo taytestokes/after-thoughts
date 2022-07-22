@@ -298,7 +298,7 @@ name = "tayte"
 
 This is a powerful operator that we can use, especially when it comes pattern matching and preventing reassignment during the match assertion.
 
-## Resources
+<!-- ## Resources
 
 [Elixir Lang Documentation - Pattern Matching](https://elixir-lang.org/getting-started/pattern-matching.html)
 
@@ -312,4 +312,4 @@ This is a powerful operator that we can use, especially when it comes pattern ma
 
 [MDN - Expressions and Operators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators)
 
-[W3Schools - Javascript Variables](https://www.w3schools.com/js/js_variables.asp)
+[W3Schools - Javascript Variables](https://www.w3schools.com/js/js_variables.asp) -->
