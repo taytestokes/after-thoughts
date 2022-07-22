@@ -1,6 +1,6 @@
 ---
 title: 'Session And Token Based Authentication Flows'
-publishedAt: '2022-05-22'
+publishedAt: '2022-06-18'
 author: 'Tayte Stokes'
 excerpt: 'An introduction to the different authentication flows between using a session or token based authentication system'
 featured: false
