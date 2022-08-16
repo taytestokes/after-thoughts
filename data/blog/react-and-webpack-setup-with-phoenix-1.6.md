@@ -1,5 +1,5 @@
 ---
-title: 'How to setup a Phoenix 1.6 application using Webpack, Babel, and React'
+title: 'How to setup a Phoenix 1.6 application using Webpack and React'
 publishedAt: '2022-08-14'
 author: 'Tayte Stokes'
 excerpt: ''
@@ -10,27 +10,65 @@ Recently as of Phoenix v1.6, the framework replaced bootstrapping the applicatio
 
 However, if you are like me and have been using Webpack as the choice of bundler for some time now and aren't ready to give it up just yet, then you're in the right place.
 
-In this post I'll be going over how to setup a new application using Phoenix v1.6 that will render a single page application for the frontend that utlizes Webpack as the asset bundler, Babel as the Javascript compiler, and React as the view library.
+In this post I'll be going over how to setup a new application using Phoenix v1.6 that will render a single page application for the frontend that utilizes webpack as the asset bundler, Babel as the Javascript compiler, and React as the view library.
 
 ## Creating A New Phoenix Application
 
 I'm assuming that your machine is already setup with Node, Elixir, and Phoenix so we won't be covering how to get your machine setup for development.
 
-First, let's create a new phoenix project using a mix task and provide the flag telling phoenix not to generate frontend assets. You can read more about what options are available to pass with this command [here](https://hexdocs.pm/phoenix/Mix.Tasks.Phx.New.html), if you are interested.
+First, let's create a new phoenix project using a mix task and provide the flag telling phoenix not to generate frontend assets.
+
+If you are interested, you can read more about what options are available to pass with this command [here](https://hexdocs.pm/phoenix/Mix.Tasks.Phx.New.html).
 
 ```
 $ mix phx.new --no-assets
 ```
 
-Now with the new phoenix application created, we are ready to get started.
+Now with the new phoenix application created, we are ready to get started building out the frontend portion of our application using Webpack, React, and Babel.
 
-## Initializing The Assets Folder With Npm
+However before we start building out the frontend, I think it's important to understand how phoenix serves the static assets that make up the frontend.
+
+## How Phoenix Serves Static Assets
+
+Phoenix handles serving static assets by using the Plug.Static plug. This plug is be found inside the Endpoint module that every request that is made to the server goes through.
+
+```
+## lib/example_web_app/endpoint.ex
+
+plug Plug.Static,
+    at: "/",
+    from: :example_app,
+    gzip: false,
+    only: ~w(assets fonts images favicon.ico robots.txt)
+```
+
+The Plug.Static plug will serve static assets from the `priv/static` directory of the application.
+
+If you look at the snippit above, we are giving the Plug.Static plug a few configuration options that are important to call out.
+
+The `at` configuration defines where to reach for static assets, in our case this will be the default request path at `/`. This needs to be a string.
+
+The `from` option defines the file path to read the static assets from. This will be an atom that represents that applications name where assets will be served from the `priv/static` directory.
+
+The `only` option is used to filter which requests to serve. This is useful to prevent file system access on every request when the `at` option is set to the default path of `/`. This will take a list of folder and file names that exist inside the `priv/static` folder that will only be served by the Plug.Static plug.
+
+If you're interested, you can read more about the configuration options available for the Plug.Static plug [here](https://hexdocs.pm/plug/Plug.Static.html).
+
+As of version 1.6, phoenix uses esbuild to prepare assets that need to be preprocessed and extract them to the `priv/static/assets` directory. This file migration happens during development mode using a phoenix watcher and in production by running a deploy script.
+
+Instead of esbuild, we will be using webpack to prepare our assets and migrate the processed assets to the `priv/static/assets` directory.
+
+Now with that in mind, let's move on and finally start building our frontend portion of the application.
+
+## Setting Up The Application Frontend
+
+<!-- Talk about plug static and how phoenix uses the assets folder to deliver static assets -->
 
 The top level assets folder is where we will store our frontend asset code that will be delivered to the browser by our phoenix backend.
 
-This folder will be treated as it's own frontend application it's own configuration, which in our case is a React application using Webpack to bundle the assets and Babel to compile our Javascript code.
+This folder will be treated as it's own frontend application with it's own configuration, which in our case will be a React application using Webpack to bundle the assets and Babel to compile our Javascript code.
 
-We first need to initialize the asset folder with it's own package.json to manage configuration for our frontend application using npm.
+We first need to initialize the asset folder with it's own package.json to manage configuration for our frontend application and allow us to install third party dependencies using npm.
 
 Inside of the assets folder, execute the npm command to initialize the folder as it's own project and pass it the _-y_ flag to accept all of the default configuration for the package.json file that will be created.
 
@@ -57,7 +95,7 @@ We should now have a package.json file inside of the assets folder that looks li
 }
 ```
 
-With the assets folder now initalized as project with npm and having it's own package.json, we can start building our frontend application.
+We won't worry about modifying this package.json for now and leave as it is.
 
 ## Setting Up Webpack and Babel
 
