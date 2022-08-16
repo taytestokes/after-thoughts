@@ -109,7 +109,7 @@ With that in place, we can start installing the dependencies we will need and co
 
 ## Setting Up Webpack and Babel
 
-This isn't a comprehensive guide around Webpack and Babel, so I won't be going into too much depth about these tools but the configuration will be enough to get started with a simple application. However, I will be highlighting the important parts that are related to what makes them work with our Phoenix application.
+This isn't a comprehensive guide around Webpack and Babel so I won't be going into too much detail about configuring these tools, but I will be highlighting the important parts that are related to what makes them work with our Phoenix application.
 
 In order for us to start using Webpack and Babel, we need to install the required dependencies from npm.
 
@@ -119,10 +119,80 @@ Inside of the `assets` directory, go ahead and execute the following command to 
 $ npm install webpack webpack-cli @babel/core @babel/preset-env babel-loader css-loader style-loader url-loader --save-dev
 ```
 
-Before we con figure Webpack and Babel, let's do some good samaritan work annd make sure that we ignore pushing the node modules to the cloud. Add the file path to the `node_modules` folder in the `assets` directory to the `.gitignore` that exists at the root of the Phoenix application.
+Before we configure Webpack and Babel, let's do some good samaritan work annd make sure that we ignore pushing the node modules to the cloud. Add the file path to the `node_modules` folder in the `assets` directory to the `.gitignore` that exists at the root of the Phoenix application.
 
 ```
 ## .gitignore
 
-/client/node_modules
+/assets/node_modules
 ```
+
+Now let's add a `.babelrc` and add the appropriate Babel presets that we will need to help compile our Javascript.
+
+```
+## assets/.babelrc
+
+{
+  "presets": ["@babel/preset-env"]
+}
+```
+
+Now it's time to add the config file for Webpack.
+
+```
+## assets/webpack.config.js
+
+const path = require("path");
+
+module.exports = {
+  entry: {
+    main: "./src/index.js",
+  },
+  output: {
+    path: path.resolve(__dirname, "../priv/static/js"),
+    filename: "[name].js",
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+        },
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+        loader: "url-loader",
+        options: { limit: false },
+      },
+    ],
+  },
+};
+```
+
+That should be good enough to get us going with creating a simple application. If you're absolutely dying to know more about these configurations you can check out the [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/) docs.
+
+Above, we define that the entry point file for the frontend application is that one that we created earlier which is `assets/src/index.js` and bundle which gets created from Webpack will be called `main`.
+
+```
+entry: {
+    main: "./src/index.js",
+},
+```
+
+Remember earlier how we talked about how the Plug.Static plug is what serves assets for our application from the `priv/static` directory?
+
+If you look at the Webpack config, you can see that we define that the output of the bundled Javascript for our frontend application should be dumped into that directory.
+
+```
+output: {
+    path: path.resolve(__dirname, "../priv/static/js"),
+},
+```
+
+With this configuration set in place, a `priv/static/js/main.js` file will be generated which houses the bundled Javascript code for our frontend application and will allow the Plug.Static to serve our bundled Javascript assets to be accessed.
