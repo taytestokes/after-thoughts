@@ -60,23 +60,19 @@ Instead of Esbuild, we will be using Webpack to prepare our assets and migrate t
 
 Now with that in mind, let's move on and finally start building our frontend portion of the application.
 
-## Setting Up The Application Frontend
+## Initializing The Frontend Directory
 
-<!-- Talk about plug static and how phoenix uses the assets folder to deliver static assets -->
+The standard convention for a Phoenix application is to store all frontend code in the `assets` folder, so we will be using that folder to build our fronntend application in.
 
-The top level assets folder is where we will store our frontend asset code that will be delivered to the browser by our phoenix backend.
+Now let's set this folder up as it's own project with npm and get a `package.json` file created to manage the dependencies and scripts that the frontend application will rely on.
 
-This folder will be treated as it's own frontend application with it's own configuration, which in our case will be a React application using Webpack to bundle the assets and Babel to compile our Javascript code.
-
-We first need to initialize the asset folder with it's own package.json to manage configuration for our frontend application and allow us to install third party dependencies using npm.
-
-Inside of the assets folder, execute the npm command to initialize the folder as it's own project and pass it the _-y_ flag to accept all of the default configuration for the package.json file that will be created.
+Inside of the `assets` folder, execute the npm command to initialize the folder as it's own project and pass it the _-y_ flag to accept all of the default configuration for the package.json file that will be created.
 
 ```
 $ npm init -y
 ```
 
-We should now have a package.json file inside of the assets folder that looks like the following.
+We should now have a `package.json` file inside of the `assets` folder that looks like the following.
 
 ```
 ## assets/package.json
@@ -95,51 +91,38 @@ We should now have a package.json file inside of the assets folder that looks li
 }
 ```
 
-We won't worry about modifying this package.json for now and leave as it is.
+We won't worry about modifying the `package.json` for now and leave as it is.
+
+The only thing left to finish initializing our frontend application is to define the entry point file for our frontend application.
+
+Since we are planning on turning this into a React application, we will follow some common React patterns and store all of our application code in a `src` folder that sits next to all of the configuration files. Go ahead and create an `index.js` file that will live in the `src` folder.
+
+```
+## assets/src/index.js
+
+console.log("Hello, world!")
+```
+
+In tradition with every new web application, it's just a simple script that logs "Hello, world!" to the console. We will be coming back and updating this file later once we start implementing React.
+
+With that in place, we can start installing the dependencies we will need and configure the build tools for our frontend application.
 
 ## Setting Up Webpack and Babel
 
-<!-- Pick up here -->
+This isn't a comprehensive guide around Webpack and Babel, so I won't be going into too much depth about these tools but the configuration will be enough to get started with a simple application. However, I will be highlighting the important parts that are related to what makes them work with our Phoenix application.
 
-Let's install the dependencies we need to setup Webpack for our frontend application. Make sure that you are currently in the assets directory when executing npm commands.
+In order for us to start using Webpack and Babel, we need to install the required dependencies from npm.
+
+Inside of the `assets` directory, go ahead and execute the following command to install the dependencies we need for the Webpack and Babel configurations.
 
 ```
-$ npm install webpack webpack-cli --save-dev
+$ npm install webpack webpack-cli @babel/core @babel/preset-env babel-loader css-loader style-loader url-loader --save-dev
 ```
 
-After the installation of those packages completes, you will see that webpack and webpack-cli have been added as dev dependencies in the package.json as well as the creation of a package-lock.json file and node_modules folder.
-
-Let's make sure that we ignore the node_modules from being pushed up by adding a path to the node_modules in the .gitignore file.
+Before we con figure Webpack and Babel, let's do some good samaritan work annd make sure that we ignore pushing the node modules to the cloud. Add the file path to the `node_modules` folder in the `assets` directory to the `.gitignore` that exists at the root of the Phoenix application.
 
 ```
 ## .gitignore
 
-/assets/node_modules
-```
-
-Now let's add the Webpack configuration for our frontend application.
-
-```
-## assets/webpack.config.js
-
-const path = require("path");
-
-module.exports = (env, options) => ({
-  entry: "./src/index.js",
-  output: {
-    filename: "[name].js",
-    path: path.resolve(__dirname, "../priv/static/assets/js"),
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-        },
-      },
-    ],
-  },
-});
+/client/node_modules
 ```
