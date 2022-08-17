@@ -185,14 +185,87 @@ entry: {
 },
 ```
 
-Remember earlier how we talked about how the Plug.Static plug is what serves assets for our application from the `priv/static` directory?
+Remember earlier how we talked about how Phoenix uses the Plug.Static plug to serve assets for our application from the `priv/static` directory?
 
 If you look at the Webpack config, you can see that we define that the output of the bundled Javascript for our frontend application should be dumped into that directory.
 
 ```
 output: {
-    path: path.resolve(__dirname, "../priv/static/js"),
+    path: path.resolve(__dirname, "../priv/static/assets/js"),
 },
 ```
 
-With this configuration set in place, a `priv/static/js/main.js` file will be generated which houses the bundled Javascript code for our frontend application and will allow the Plug.Static to serve our bundled Javascript assets to be accessed.
+With this configuration set in place, a `priv/static/assets/js/main.js` file will be generated which houses the bundled Javascript code for our frontend application and will allow the Plug.Static to serve our bundled Javascript assets.
+
+Next we need to actually trigger Webpack to create a bundle when we spin up our development server and watch for any changes.
+
+## Running Webpack During Development
+
+We want our frontend application to be bundled and watched for any changes during the development process. We can do this by using a Phoenix Watcher.
+
+The Phoenix Endpoint can be configured with a set of watchers that will run other processes alongside the main server process.
+
+You can find the configuration for the Endpoint for the development environment in the `config/dev.ex` file.
+
+```
+## config/dev.ex
+
+config :example_app, ExampleAppWeb.Endpoint,
+  http: [ip: {127, 0, 0, 1}, port: 4000],
+  check_origin: false,
+  code_reloader: true,
+  debug_errors: true,
+  secret_key_base: "qJGuNZL8BUCEA343B51qWkIVyl1MS7taLsOBamVOacWKR6pwRDTiSRtngLSqRAKR",
+  watchers: []
+```
+
+We can configure the `watchers` option to execute a Node process to watch Webpack for bundling our frontend portion of the application when we run the `mix phx.server` command to start our Phoenix server.
+
+```
+watchers: [
+    node: [
+      "node_modules/webpack/bin/webpack.js",
+      "watch",
+      "--mode",
+      "development",
+      cd: Path.expand("../assets", __DIR__)
+    ]
+]
+```
+
+Above, we are basically setting up the watcher to run the `node node_modules/webpack/bin/webpack.js watch --mode development` script which will run Webpack in development mode and wacth for any changes. The last part, which is the `cd` option, tells the watcher which directory to run that script from.
+
+If you're not familiar with the `watch` option for Webpack, you find out more about it [here](https://webpack.js.org/configuration/watch/).
+
+Now, when we start up our Phoenix application using `mix phx.server`, we can validate Webpack is also being executed by a the watcher we created by checking the terminal logs and seeing a message that declares Webpack was succesfully compiled.
+
+```
+Generated example_app app
+[info] Running ExampleAppWeb.Endpoint with cowboy 2.9.0 at 127.0.0.1:4000 (http)
+[info] Access ExampleAppWeb.Endpoint at http://localhost:4000
+asset main.js 1.21 KiB [compared for emit] (name: main)
+./src/index.js 29 bytes [built] [code generated]
+webpack 5.74.0 compiled successfully in 696 ms
+```
+
+## Using The Bundled Frontend
+
+Even though we are now generating a bundle for our frontend code, it still isn't being used since it's not being linked to the HTML file that will be delivered to the browser from our Phoenix application.
+
+When a client makes a request to our Phoenix application, we will return an HTML file that will contain the contents of our web page. We will need to include a `script` tag that will reference our bundled Javascript code to embed into the HTML file.
+
+If you're not familiar with how Phoenix uses views, layouts, and templates to create HTML files, you can find out more about it from the [docs](https://hexdocs.pm/phoenix/views.html#layouts).
+
+We will inject that `script` tag into the main layout of the application that wraps every template, which is the `root.html.heex` file.
+
+At the end of the `body` tag in that layout file, go ahead and add this script tag.
+
+```
+
+<script type="text/javascript" src={Routes.static_path(@conn, "/assets/js/main.js")}></script>
+
+```
+
+```
+
+```
