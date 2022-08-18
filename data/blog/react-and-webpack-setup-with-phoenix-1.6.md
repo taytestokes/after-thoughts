@@ -233,11 +233,11 @@ watchers: [
 ]
 ```
 
-Above, we are basically setting up the watcher to run the `node node_modules/webpack/bin/webpack.js watch --mode development` script which will run Webpack in development mode and wacth for any changes. The last part, which is the `cd` option, tells the watcher which directory to run that script from.
+Above, we are basically setting up the watcher to run the `node node_modules/webpack/bin/webpack.js watch --mode development` script which will run Webpack in development mode and watch for any changes. The last part, which is the `cd` option, tells the watcher which directory to run that script from.
 
 If you're not familiar with the `watch` option for Webpack, you find out more about it [here](https://webpack.js.org/configuration/watch/).
 
-Now, when we start up our Phoenix application using `mix phx.server`, we can validate Webpack is also being executed by a the watcher we created by checking the terminal logs and seeing a message that declares Webpack was succesfully compiled.
+Now when we start up our Phoenix application using `mix phx.server`, we can validate Webpack is also being executed by a the watcher we created by checking the terminal logs and seeing a message that declares Webpack was succesfully compiled.
 
 ```
 Generated example_app app
@@ -248,7 +248,7 @@ asset main.js 1.21 KiB [compared for emit] (name: main)
 webpack 5.74.0 compiled successfully in 696 ms
 ```
 
-## Using The Bundled Frontend
+## Using The Webpack Bundle
 
 Even though we are now generating a bundle for our frontend code, it still isn't being used since it's not being linked to the HTML file that will be delivered to the browser from our Phoenix application.
 
@@ -261,11 +261,86 @@ We will inject that `script` tag into the main layout of the application that wr
 At the end of the `body` tag in that layout file, go ahead and add this script tag.
 
 ```
+## lib/example_app_web/templates/layout/root.html.heex
 
-<script type="text/javascript" src={Routes.static_path(@conn, "/assets/js/main.js")}></script>
+<body>
+    <%= @inner_content %>
 
+    <script defer type="text/javascript" src={Routes.static_path(@conn, "/assets/js/main.js")}></script>
+</body>
 ```
 
-```
+We are using the Routes path helper function provided by Phoenix to generate a path to the Javascript bundle that is created from Webpack.
+
+We also want to include this `script` tag under the embedded `<%= @inner_content %>` tag. This will be important later when we start adding React because we need the content for the template to be rendered first in order to render our React application.
+
+If you were to visit `http://localhost:4000` in your browser and open the developer console, you would see the console log of "Hello, world!" that comes from the `assets/src/index.js` file.
+
+## Setting Up React
+
+Now that the bundle created by Webpack is being delivered to the client, let's start setting up the React application.
+
+Inside of the `assets` folder, we need to install a few more dependencies to use React.
 
 ```
+$ npm install react react-dom
+```
+
+We also want to get the Babel React presets to compile the React code correctly.
+
+```
+$ npm install @babel/preset-react --save-dev
+```
+
+With those dependencies now installed, we start setting up the React application.
+
+Let's add the new Babel preset to the `assets/.babelrc` file.
+
+```
+## assets/.babelrc
+
+{
+  "presets": ["@babel/preset-env", "@babel/preset-react"]
+}
+```
+
+Now let's revisit the `assets/src/index.js file and get it to render our React application.
+
+```
+## assets/src/index.js
+
+import React from "react";
+import ReactDOM from "react-dom";
+
+ReactDOM.render(<div>Hello from React!</div>, document.getElementById("root"));
+```
+
+That should be enough to get a very simple single element React application. However, we haven't actually created the elemennt that will be used as the anchor point to rendwer our React application. Let's get that added.
+
+Since the `lib/example_app_web/templates/page/index.html.heex` tempalte file is the template that will be rendered in place of the `<%= @inner_content =>` tag inside of the `lib/example_app_web/templates/layout/root.html.heex` when a client makes a request to the default base route `/` of the Phoenix application, it would be a good idea to put that element in that template.
+
+If you are unsure as of why this is the template file that will be rendered at that route, we can check out the Router module of the Phoenix application.
+
+```
+## lib/example_app_web/router.ex
+
+scope "/", ExampleAppWeb do
+  pipe_through :browser
+
+  get "/", PageController, :index
+end
+```
+
+For the scope of the base route `/`, we define that `get` request made to the base route should be forwarded to the PageController's index action, which in turn delivers the associated `index.html` template.
+
+Now let's add the element to the HTML template to use to render our React application.
+
+```
+## lib/example_app_web/templates/page/index.html.heex
+
+<div id="root" />
+```
+
+If you visit the application at `http://localhost:4000`, you should now see that the string "Welcome from React!" is being rendered to the web page.
+
+Obviously this is an extremely simple React application, but all of the scaffolding is now in place to start building out a complex React application for the frontend.
