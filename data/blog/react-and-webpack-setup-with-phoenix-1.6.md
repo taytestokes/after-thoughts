@@ -441,9 +441,9 @@ Validate the refreshes and direct requests through the url bar will render our R
 
 ## Frontend and Backend Communication
 
-The last thing that we should address is the question "How do we send data from our Phoenix application to our frontend?". We will do this by making HTTP requests from our frontend application to our Phoenix Server.
+The last thing that we should address is the question "How do we send data from our Phoenix application to our frontend?".
 
-Not only will our server deliver our frontend assets, but it will also act as an API to our frontend application so we can query for data over the network via HTTP.
+Not only will our Phoenix server deliver our frontend assets to the browser, but it will also act as an API that our frontend React application we can query over the network via HTTP.
 
 If you're not familiar with the lifecycle of a Phoenix request, then you should check out the [documentation](https://hexdocs.pm/phoenix/request_lifecycle.html) that explains it.
 
