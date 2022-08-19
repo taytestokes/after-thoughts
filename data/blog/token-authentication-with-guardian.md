@@ -620,7 +620,7 @@ Now when we make an authenticated request that contains a valid token for a user
 {
   "data": {
     "id": 1,
-    "username": "Slick Rick"
+    "username": "slick_rick"
   }
 }
 ```
