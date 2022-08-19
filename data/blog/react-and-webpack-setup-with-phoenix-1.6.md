@@ -2,7 +2,7 @@
 title: 'React and Webpack with Phoenix 1.6'
 publishedAt: '2022-08-14'
 author: 'Tayte Stokes'
-excerpt: 'A quick guide for setting up a new Phoenix 1.6 application to use Webpack and React.'
+excerpt: 'A quick guide for setting up a new Phoenix 1.6 application to use Webpack and React'
 featured: true
 ---
 
@@ -11,6 +11,8 @@ Recently as of Phoenix v1.6, the framework replaced bootstrapping the applicatio
 However, if you are like me and have been using Webpack as the choice of bundler for some time now and aren't ready to give it up just yet, then you're in the right place.
 
 In this post I'll be going over how to setup a new application using Phoenix v1.6 that will render a single page application for the frontend that utilizes Webpack as the asset bundler, Babel as the Javascript compiler, and React as the view library.
+
+We will also go a little further and demonstrate how to configure client side routing using React Router as well as how to have the frontend React application communicate with the backend Phoenix server.
 
 ## Creating A New Phoenix Application
 
@@ -433,4 +435,123 @@ end
 
 Now every request made to the default scope, will render our React application.
 
+You can learn more about using this pattern in the routing [documentation](https://hexdocs.pm/phoenix/Phoenix.Router.html#module-routing).
+
 Validate the refreshes and direct requests through the url bar will render our React application by visiting the `/dashboard` route directly or through the navigation in the UI and refresh the browser.
+
+## Frontend and Backend Communication
+
+The last thing that we should address is the question "How do we send data from our Phoenix application to our frontend?". We will do this by making HTTP requests from our frontend application to our Phoenix Server.
+
+Not only will our server deliver our frontend assets, but it will also act as an API to our frontend application so we can query for data over the network via HTTP.
+
+If you're not familiar with the lifecycle of a Phoenix request, then you should check out the [documentation](https://hexdocs.pm/phoenix/request_lifecycle.html) that explains it.
+
+The first thing that we need to is modify the Phoenix routes to open a new scope specifically for API requests.
+
+```
+## lib/example_app_web/router.ex
+
+scope "/api", ExampleAppWeb.Api do
+  pipe_through :api
+
+  get "/data", DataController, :index
+end
+
+scope "/", ExampleAppWeb do
+  pipe_through :browser
+
+  get "/*page", PageController, :index
+end
+```
+
+In the code block above, we added a new scope to handle API requests. It use the `ExampleAppWeb.Api` module namespace to help create a standard namepsacing convention for creating the other views and controllers that will be used to handle API requests.
+
+It's important to note that we added this new `/api` scope above the `/` root scope. This is because if we have a request made to `/api` we want to make sure that it get's processed through that scope and not the root scope.
+
+In the scope, we set up a basic route defined as `/data` that will handle incoming `get` requests. It uses the DataController's index action to handle the request, however that hasn't been created.
+
+Let's get that action and the controller created as well as the associated view.
+
+```
+## lib/example_app_web/controllers/api/data_controller.ex
+
+defmodule ExampleAppWeb.Api.DataController do
+  use ExampleAppWeb, :controller
+
+  @data [
+    %{
+      id: 1,
+      title: "Test Data One",
+    },
+    %{
+      id: 2,
+      title: "Test Data Two",
+    },
+    %{
+      id: 3,
+      title: "Test Data Three",
+    }
+  ]
+
+  def index(conn, params) do
+    render(conn, "index.json", data: data)
+  end
+end
+```
+
+```
+## lib/example_app_web/views/api/data_view.ex
+
+defmodule ExampleAppWeb.Api.DataView do
+  use ExampleAppWeb, :view
+
+  def render("index.json", %{data: data}) do
+    render_many(data, __MODULE__, "datum.json")
+  end
+
+  def render("datum.json", %{data: datum}) do
+    %{
+      id: datum.id,
+      title: datum.title
+    }
+  end
+end
+```
+
+With the controller and the view connfigured to send a response of data, we can make a HTTP request from our frontend to get that data.
+
+We will make this request in the `Dashboard` component so when the component mounts to the browser, it will make that network request for the data and display it in the UI.
+
+```
+## assets/src/components/Dashboard.js
+
+import React from "react";
+
+export const Dashboard = () => {
+  const [data, setData] = React.useState([]);
+
+  React.useEffect(() => {
+    fetch("http://localhost:4000/api/data")
+      .then((response) => response.json())
+      .then((data) => setData(data));
+  }, []);
+
+  return (
+    <div>
+      <h1>Dashboard</h1>
+      <ul>
+        {data.map((datum) => {
+          return <li key={datum.id}>{datum.title}</li>;
+        })}
+      </ul>
+    </div>
+  );
+};
+```
+
+If you start up the Phoenix application and visit `http://localhost:4000/dashboard`, the data should be getting fetched and displayed browser.
+
+Our setup for a Phoenix application that uses Webpack to bundle assets and React as the library to manage the frontend application is now complete. Obviously, this was a pretty simple example of an application, but hopefully it has been helpful enough to get you kick started with building and application with this tech stack.
+
+You can find all of the code that was included in this post at this [repo](https://github.com/taytestokes/webpack-react-phoenix-example).
