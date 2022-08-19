@@ -1,8 +1,8 @@
 ---
-title: 'How to setup a Phoenix 1.6 application using Webpack and React'
+title: 'React and Webpack with Phoenix 1.6'
 publishedAt: '2022-08-14'
 author: 'Tayte Stokes'
-excerpt: ''
+excerpt: 'A quick guide for setting up a new Phoenix 1.6 application to use Webpack and React.'
 featured: true
 ---
 
@@ -344,3 +344,93 @@ Now let's add the element to the HTML template to use to render our React applic
 If you visit the application at `http://localhost:4000`, you should now see that the string "Welcome from React!" is being rendered to the web page.
 
 Obviously this is an extremely simple React application, but all of the scaffolding is now in place to start building out a complex React application for the frontend.
+
+## Client Side Routing
+
+Let's start expanding on the React application and build it out a little more to give it a better SPA experience by adding some client side routing with React Router.
+
+We need to install `react-router-dom` as another dependency for our application. In the `assets` folder, run the npm command to install it.
+
+```
+$ npm install react-router-dom
+```
+
+Now once that's installed, let's create a few more components for our React application to render per route. We'll create these components in a new folder called `components`. These will be some simple components that render what page they would reflect in our application.
+
+```
+## assets/src/components/Home.js
+
+import React from "react";
+
+export const Home = () => {
+  return <div>Home</div>;
+};
+```
+
+```
+## assets/src/components/Dashboard.js
+
+import React from "react";
+
+export const Dashboard = () => {
+  return <div>Dashboard</div>;
+};
+```
+
+With those created, let's hop back to the entry point of our frontend application and setup the router and use those components.
+
+```
+## assets/src/index
+
+import React from "react";
+import ReactDOM from "react-dom";
+
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+
+import { Home } from "./components/Home";
+import { Dashboard } from "./components/Dashboard";
+
+ReactDOM.render(
+  <Router>
+    <header>
+      <nav role="navigation">
+        <ul>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/dashboard">Dashboard</Link>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+    </Routes>
+  </Router>,
+  document.getElementById("root")
+);
+```
+
+We now have a very simple navigation menu that allows you to navigate to different pages of the frontend application via client side routing. However, what happesn if you visit the dashboard page and refresh? Or try to visit a specific path through the url bar?
+
+Phoenix will receive this HTTP get request and try to route the request to a specific route setup in the Phoenix Router. We need to configure the Phoenix router to deliver all requests to our PageController's index action to render our React application which will then manage the client side routing.
+
+In the Phoenicx Router, we can use a wildcard pattern in the route definition to tell the Router to catch all requests and send them to a specific controller action.
+
+In our case, we will configure Phoenix so that all requests made to the server that get processed through the `/` scope, will be sent the Page Controllers index action by setting the route path to `/*path`.
+
+```
+## lib/example_app_web/router.ex
+
+scope "/", ExampleAppWeb do
+  pipe_through :browser
+
+  get "/*page", PageController, :index
+end
+```
+
+Now every request made to the default scope, will render our React application.
+
+Validate the refreshes and direct requests through the url bar will render our React application by visiting the `/dashboard` route directly or through the navigation in the UI and refresh the browser.
