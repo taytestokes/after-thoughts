@@ -306,7 +306,7 @@ Let's add the new Babel preset to the `assets/.babelrc` file.
 }
 ```
 
-Now let's revisit the `assets/src/index.js file and get it to render our React application.
+Now let's revisit the `assets/src/index.js` file and get it to render our React application.
 
 ```
 ## assets/src/index.js
@@ -419,7 +419,7 @@ We now have a very simple navigation menu that allows you to navigate to differe
 
 Phoenix will receive this HTTP get request and try to route the request to a specific route setup in the Phoenix Router. We need to configure the Phoenix router to deliver all requests to our PageController's index action to render our React application which will then manage the client side routing.
 
-In the Phoenicx Router, we can use a wildcard pattern in the route definition to tell the Router to catch all requests and send them to a specific controller action.
+In the Phoenix Router, we can use a wildcard pattern in the route definition to tell the Router to catch all requests and send them to a specific controller action.
 
 In our case, we will configure Phoenix so that all requests made to the server that get processed through the `/` scope, will be sent the Page Controllers index action by setting the route path to `/*path`.
 
