@@ -10,9 +10,7 @@ export async function generateStaticParams() {
   const postSlugs = getPostSlugs()
   const paths = postSlugs.map((slug) => {
     return {
-      params: {
-        slug: slug.replace('.md', ''),
-      },
+      slug: slug.replace('.md', ''),
     }
   })
 
