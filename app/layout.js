@@ -12,6 +12,10 @@ export const metadata = {
     template: 'After Thoughts | %s',
   },
   description: 'A software development blog created by Tayte Stokes',
+  icons: {
+    icon: '/after-thoughts-block-logo.jpg',
+    shortcut: '/after-thoughts-block-logo.jpg',
+  },
   keywords: ['JavaScript', 'React', 'Elixir', 'Phoenix'],
   viewport: {
     width: 'device-width',
