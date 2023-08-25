@@ -1,8 +1,8 @@
 ---
-title: 'How Compilers Work and Building One Using Javascript'
+title: 'Introduction to Compiler Design and building one with Javascript'
 publishedAt: '2023-08-24'
 author: 'Tayte Stokes'
-excerpt: 'A look into the compliation process and what it takes to build a compiler using Javascript.'
+excerpt: 'An introduction to the different phases used in compiler design with an example of building a mini compiler in Javascript'
 featured: false
 ---
 
@@ -45,16 +45,13 @@ This is the sixth and final phase of the compilation process. The code generator
 I'm a lazy programmer and I really hate having to type out the word _function_ so we are going to write a an extremely simple compiler that will allow us to use the expression _fn_ instead. Our compiler will take some of our special code that allows us to use the _fn_ expression and compile it into valid Javascript.
 
 ```js
-// Our lazy expression will transform into a valid Javascript expression
 fn add(){} => function sum(){}
 ```
 
 Let's get started and define our compiler that accepts our special code as the input. It's important to note that the input here will be a string of our code.
 
 ```js
-const compiler = (input) => {
-  // Logic to compile our code
-}
+const compiler = (input) => {}
 ```
 
 The first step in our compilation process is to scan the input and break it down into the different syntax blocks of the language. The syntax blocks are referred to as _tokens_. The function that handles this process is called the _lexer_ and will return a stream of the tokens created. Let's go ahead and create our lexer function.
@@ -150,16 +147,15 @@ const input = 'fn test(arg){}'
 compiler(input)
 
 // Result:
-//
-// [
-//   ({ type: 'function declaration', value: 'fn' },
-//   { type: 'name', value: 'test' },
-//   { type: 'paren', value: '(' },
-//   { type: 'name', value: 'arg' },
-//   { type: 'paren', value: ')' },
-//   { type: 'brace', value: '{' },
-//   { type: 'brace', value: '}' }),
-// ]
+[
+  ({ type: 'function declaration', value: 'fn' },
+  { type: 'name', value: 'test' },
+  { type: 'paren', value: '(' },
+  { type: 'name', value: 'arg' },
+  { type: 'paren', value: ')' },
+  { type: 'brace', value: '{' },
+  { type: 'brace', value: '}' }),
+]
 ```
 
 Now that we have the tokens of our program, we can use them to form an abstract syntax tree that will represent our program. We will create a _parser_ function to handle transorming our tokens into the AST.
@@ -255,19 +251,175 @@ const input = 'fn test(arg){}'
 compiler(input)
 
 // Result
-// {
-//   type: 'Program',
-//   body: [
-//     {
-//       type: 'FunctionDeclaration',
-//       name: 'test',
-//       params: [{ type: 'Identifier', value: 'arg' }],
-//       body: [],
-//     },
-//   ],
-// }
+{
+  type: 'Program',
+  body: [
+    {
+      type: 'FunctionDeclaration',
+      name: 'test',
+      params: [{ type: 'Identifier', value: 'arg' }],
+      body: [],
+    },
+  ],
+}
 ```
 
-## Resources
+Now that we have our AST, we will need to transform it into a shape that will make it easy for Javascript to be generated from. In our case, we will create another AST that will mimic our AST, but with with nodes that have been transformed with proper information to make it easy to for Javascript to be generated.
 
-[Babel](https://babeljs.io/docs)
+Let's go ahead an create the _transformer_ function that will receive our AST that is produced from the _parser_ as an argument and it will return a transformed AST.
+
+```js
+const transformer = (ast) => {
+  const transformedAst = {
+    type: 'Program',
+    body: [],
+  }
+
+  let position = transformedAst.body
+
+  const NODE_TRANSFORMERS = {
+    FunctionDeclaration(node) {
+      const transformedNode = {
+        type: 'FunctionDeclaration',
+        id: {
+          type: 'Identifier',
+          name: node.name,
+        },
+        params: [],
+        body: [],
+      }
+      position.push(transformedNode)
+      position = transformedNode.params
+    },
+    Identifier(node) {
+      const transformedNode = {
+        type: 'Identifier',
+        name: node.value,
+      }
+      position.push(transformedNode)
+    },
+  }
+
+  const transform = (node, parent) => {
+    const mapper = NODE_TRANSFORMERS[node.type]
+
+    if (mapper) mapper(node, parent)
+
+    if (node.type === 'Program') {
+      node.body.forEach((childNode) => transform(childNode, node))
+    }
+
+    if (node.type === 'FunctionDeclaration') {
+      node.params.forEach((childNode) => transform(childNode, node))
+      node.body.forEach((childNode) => transform(childNode, node))
+    }
+  }
+
+  transform(ast, null)
+
+  return transformedAst
+}
+```
+
+The transformer is essentially traversing through AST that is received as input and generates a node on the new transformed AST based on the node being traversed. We first define a new AST that will be the result of this function.
+
+Next we define the position, which is where we want to start adding new nodes in the AST. Initially we want to start on the body of the root node, since all children nodes will exist here.
+
+We then define a map of methods that will be used to create a new node based on the node currently being traversed and then append it to the new AST.
+
+Next we have our _transform_ function. This is a recursive function that will essentially walk our input AST and call the correct node mapper method for each node. We will detect if the current node being traversed has any children nodes based on the node type and then it recursively call itself for each child node to correctly map it to the new AST.
+
+The last step is to start our _transform_ function passing it the input AST and start the traversing at the root program node.
+
+Now when we call our _transformer_ passing it our AST generated from our _parser_, we can see how it is now a new AST that is better represented to be turned into Javascript.
+
+```js
+// Before
+{
+  type: 'Program',
+  body: [
+    {
+      type: 'FunctionDeclaration',
+      name: 'test',
+      params: [{ type: 'Identifier', value: 'arg' }],
+      body: [],
+    },
+  ],
+}
+
+// After
+{
+  type: "Program",
+  body: [
+    {
+      type: "FunctionDeclaration",
+      id: { type: "Identifier", name: "test" },
+      params: [{ type: "Identifier", name: "arg" }],
+      body: [],
+    },
+  ],
+};
+```
+
+Now let's add the _transformer_ to our _compiler_.
+
+```js
+const compiler = (input) => {
+  const tokens = lexer(input)
+  const ast = parser(tokens)
+  const transformedAst = transformer(ast)
+}
+```
+
+Now that we have generated our intermediate code into an AST that represnts our program, we now need to generate actual Javascript, since that is our targeted language, from it.
+
+Let's create a _generator_ function that will handle this for us.
+
+```js
+const generator = (node) => {
+  if (node.type === 'Program') {
+    return node.body.map((childNode) => generator(childNode)).join('\n')
+  }
+
+  if (node.type === 'Identifier') {
+    return node.name
+  }
+
+  if (node.type === 'FunctionDeclaration') {
+    return `function ${generator(node.id)}(${node.params
+      .map((paramNode) => generator(paramNode))
+      .join(',')}){${node.body.map((bodyNode) => generator(bodyNode))}}`
+  }
+}
+```
+
+The _generator_ function is going to be another recursive function that will traverse our intermediate AST created from the _transformer_ and it will determine which type of node is being traversed and map the nodes values to the correct Javascript syntax needed.
+
+If we take a look, the first thing _generator_ does is check to see if the node being traversed is the root node, if so then it will map through all of the children nodes and call itself for each node. It then returns the output of the mapped result as a string seperated by new lines. In our case, there will only be a single line because our example is so simple.
+
+Next we need to check for the other types of node that we could possibly run into and correctly handle creating Javascript syntax based on that node data and structure.
+
+Now if we were to execute the _generator_ and pass it the intermediate AST, we should expect to see the correct Javascript syntax for a function declaration as the output.
+
+```js
+// Before
+fn test(arg){}
+
+// After
+function test(arg){}
+```
+
+Let's go ahead and add the _generator_ to our _compiler_ and return the generated code.
+
+```js
+const compiler = (input) => {
+  const tokens = lexer(input)
+  const ast = parser(tokens)
+  const transformedAst = transformer(ast)
+  const generatedCode = generator(transformedAst)
+
+  return generatedCode
+}
+```
+
+Boom, we now have a mini compiler! Maybe it's easier to just type out the word _function_ instead...
