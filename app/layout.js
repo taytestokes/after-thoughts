@@ -43,7 +43,7 @@ export const metadata = {
     },
   },
   twitter: {
-    card: 'summary_large_image',
+    card: 'summary_image',
     title: 'After Thoughts',
     description: 'A software development blog created by Tayte Stokes',
     creator: '@taytestokes',
