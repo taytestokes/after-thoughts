@@ -423,3 +423,17 @@ const compiler = (input) => {
 ```
 
 Boom, we now have a mini compiler! Maybe it's easier to just type out the word _function_ instead...
+
+## Resources
+
+Resources used to help construct this blog post and further my understanding around the topic.
+
+[AST Explorer](https://astexplorer.net/)
+
+[Geeks For Geeks - Phases of a compiler](https://www.geeksforgeeks.org/phases-of-a-compiler/)
+
+[Scaler - Phases of compiler](https://www.scaler.com/topics/phases-of-compiler/)
+
+[Github - jamiebuilds/the-super-tiny-compiler](https://github.com/jamiebuilds/the-super-tiny-compiler/tree/master)
+
+[Caught In The Web - Create Your Own Compiler](https://citw.dev/tutorial/create-your-own-compiler?p=1)
