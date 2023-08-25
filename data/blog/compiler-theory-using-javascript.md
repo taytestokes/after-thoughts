@@ -134,10 +134,20 @@ The next values we need to check for are curly braces that define a block. We wi
 
 With those checks in place, if we were to run our lexer function with a _fn_ declaration, we will get a list of tokens that can be used in the next phase of compilation.
 
+Let's go ahead an now add our lexer function to our compiler.
+
+```js
+const compiler = (input) => {
+  const tokens = lexer(input)
+}
+```
+
+If we return the tokens from our compiler and use our example input, the result would look like the following.
+
 ```js
 const input = 'fn test(arg){}'
 
-lexar(input)
+compiler(input)
 
 // Result:
 //
@@ -150,14 +160,6 @@ lexar(input)
 //   { type: 'brace', value: '{' },
 //   { type: 'brace', value: '}' }),
 // ]
-```
-
-Let's go ahead an now add our lexer function to our compiler.
-
-```js
-const compiler = (input) => {
-  const tokens = lexer(input)
-}
 ```
 
 Now that we have the tokens of our program, we can use them to form an abstract syntax tree that will represent our program. We will create a _parser_ function to handle transorming our tokens into the AST.
@@ -220,7 +222,51 @@ const parser = (tokens) => {
 }
 ```
 
-Let's unpack eveything that's happening inside of our parser.
+Let's unpack eveything that's happening inside of our parser. Since we will be iterating through the tokens we generated and trasnform them into nodes on the AST, we need to keep track of our iteration poisition. We then create an object that will represent our AST. The root node of the AST will contain two properties, the type which is set to _Program_ and the body which will be all children nodes on the tree.
+
+We will set the value of the root nodes body by using a recursive function called _walk_ that will produce the nodes on the AST that are derived from the tokens we are processing.
+
+The _walk_ function will first keep track of the token that we are processing and determine it's type. Dependendant on the type, we will execute logic. Since this example is so simple we only need to create one node on our AST, which is a FunctionDeclaration node that will represent our single function declaration.
+
+We first check for a function declaration token and then we will create a new node that represents a FunctionDeclaration and save the type, name, params, and body of the function declaration. The type declares what type of node this is, the name will be the variable name for the function, the params will be additional nodes that represent the param objects, and the body will be another set of nodes that will describe what the function does.
+
+In order to get the name of the function declaration, we need to advance to the token that contains it which should be the next token in the list. After saving the functions name, we can move onto building the param nodes.
+
+Since we built the lexer and understand that the variables defined between the parenthsis of the function delcaration are params, we can skip to the first param token and create nodes for each param token. In our case, we are labeling these nodes as Identifiers (I actually think this de facto name for this).
+
+Notice how we are now recursively calling our _walk_ function to create a node for each of these param tokens. We now are at the top level of the _walk_ function in the recursive call, so we need to add a condition to check for Indentifier token type and properly spawn a new node for it.
+
+Once we have created new nodes on the AST for our params, we can do the same thing for creating new nodes that represent the body of our function declaration.
+
+Now let's add our parser to our compiler.
+
+```js
+const compiler = (input) => {
+  const tokens = lexer(input)
+  const ast = parser(tokens)
+}
+```
+
+If we were to return the AST that was just created from our parser from the compiler function using our example input, the result look like the following.
+
+```js
+const input = 'fn test(arg){}'
+
+compiler(input)
+
+// Result
+// {
+//   type: 'Program',
+//   body: [
+//     {
+//       type: 'FunctionDeclaration',
+//       name: 'test',
+//       params: [{ type: 'Identifier', value: 'arg' }],
+//       body: [],
+//     },
+//   ],
+// }
+```
 
 ## Resources
 
