@@ -40,6 +40,188 @@ This is the fifth phase in the compilation process. The optimization phase will 
 
 This is the sixth and final phase of the compilation process. The code generator will receive the optimized intermediate code from the previous phase and translates it into the targeted machine language.
 
+## Building our own compiler using Javascript
+
+I'm a lazy programmer and I really hate having to type out the word _function_ so we are going to write a an extremely simple compiler that will allow us to use the expression _fn_ instead. Our compiler will take some of our special code that allows us to use the _fn_ expression and compile it into valid Javascript.
+
+```js
+// Our lazy expression will transform into a valid Javascript expression
+fn add(){} => function sum(){}
+```
+
+Let's get started and define our compiler that accepts our special code as the input. It's important to note that the input here will be a string of our code.
+
+```js
+const compiler = (input) => {
+  // Logic to compile our code
+}
+```
+
+The first step in our compilation process is to scan the input and break it down into the different syntax blocks of the language. The syntax blocks are referred to as _tokens_. The function that handles this process is called the _lexer_ and will return a stream of the tokens created. Let's go ahead and create our lexer function.
+
+```js
+const letterRegex = /^[A-Za-z]+$/
+const whiteSpaceRegex = /\s/
+
+const lexer = (input) => {
+  const tokens = []
+  let position = 0
+
+  while (position < input.length) {
+    let character = input[position]
+
+    if (letterRegex.test(character)) {
+      let value = ''
+
+      while (letterRegex.test(character)) {
+        value += character
+        character = input[++position]
+      }
+
+      if (value === 'fn') {
+        tokens.push({
+          type: 'function declaration',
+          value,
+        })
+      } else {
+        tokens.push({
+          type: 'name',
+          value,
+        })
+      }
+      continue
+    }
+
+    if (whiteSpaceRegex.test(character)) {
+      position++
+      continue
+    }
+
+    if (character === '(' || character === ')') {
+      tokens.push({
+        type: 'paren',
+        value: character,
+      })
+      position++
+      continue
+    }
+
+    if (character === '{' || character === '}') {
+      tokens.push({
+        type: 'brace',
+        value: character,
+      })
+      position++
+      continue
+    }
+
+    throw new Error(`Error compiling value: '${character}'`)
+  }
+
+  return tokens
+}
+```
+
+There's a lot happening in that lexer function, so let's break it down. We first create an empty array that will hold our tokens, then we need to process the input by iterating through it on each character so we create the _position_ variable to keep track of our current position in the loop.
+
+Next we keep track of which character we are currently iterating over using our current position. We then need to run a few checks against the current character to know if we should tokenize it. We first check to see if character is an alphabetical letter, if it is then we will establish what characters follow it and if determine if it's a special keyword or some sort of variable name. If the group of characters equate to _fn_ then we will tokenize that as a function declaration and continue iterating over the rest of the input. If it's not, then we will tokenize it as a variable name.
+
+Next we check if the current character is a whitespace. This isn't valid syntax for us, so we will not tokenize it and continue to the next iteration.
+
+Now we will check to see if the character is either a '(' or ')' and then tokenize it as a paren.
+
+The next values we need to check for are curly braces that define a block. We will check for the '{' and '}' characters and tokenize them as a brace.
+
+With those checks in place, if we were to run our lexer function with a _fn_ declaration, we will get a list of tokens that can be used in the next phase of compilation.
+
+```js
+const input = 'fn test(arg){}'
+
+lexar(input)
+
+// Result:
+//
+// [
+//   ({ type: 'function declaration', value: 'fn' },
+//   { type: 'name', value: 'test' },
+//   { type: 'paren', value: '(' },
+//   { type: 'name', value: 'arg' },
+//   { type: 'paren', value: ')' },
+//   { type: 'brace', value: '{' },
+//   { type: 'brace', value: '}' }),
+// ]
+```
+
+Let's go ahead an now add our lexer function to our compiler.
+
+```js
+const compiler = (input) => {
+  const tokens = lexer(input)
+}
+```
+
+Now that we have the tokens of our program, we can use them to form an abstract syntax tree that will represent our program. We will create a _parser_ function to handle transorming our tokens into the AST.
+
+```js
+const parser = (tokens) => {
+  let position = 0
+
+  const walk = () => {
+    let token = tokens[position]
+
+    if (token.type === 'function declaration') {
+      token = tokens[++position]
+
+      const node = {
+        type: 'FunctionDeclaration',
+        name: token.value,
+        params: [],
+        body: [],
+      }
+
+      position += 2
+      token = tokens[position]
+
+      while (token.value !== ')') {
+        node.params.push(walk())
+        token = tokens[position]
+        position++
+      }
+
+      token = tokens[++position]
+
+      while (token.value !== '}') {
+        node.body.push(walk())
+        token = tokens[position]
+        position++
+      }
+
+      return node
+    }
+
+    if (token.type === 'identifier') {
+      position++
+      const node = {
+        type: 'Identifier',
+        value: token.value,
+      }
+      return node
+    }
+
+    throw new TypeError(`Unknown token type: '${token.type}'`)
+  }
+
+  const ast = {
+    type: 'Program',
+    body: [walk()],
+  }
+
+  return ast
+}
+```
+
+Let's unpack eveything that's happening inside of our parser.
+
 ## Resources
 
 [Babel](https://babeljs.io/docs)
