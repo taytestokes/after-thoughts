@@ -23,8 +23,6 @@ export function TableOfContents() {
   useEffect(() => {
     const headingElements = document.querySelectorAll('h2, h3')
 
-    new IntersectionObserver(() => console.log('ehllo!'))
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -34,7 +32,7 @@ export function TableOfContents() {
         })
       },
       {
-        rootMargin: '-25% 0% -50% 0%',
+        rootMargin: '0% 0% -75% 0%',
       },
     )
 
@@ -58,7 +56,7 @@ export function TableOfContents() {
   }, [])
 
   return (
-    <nav className="flex flex-col self-start sticky top-8 w-[300px]">
+    <nav className="flex flex-col self-start sticky top-8">
       <ul>
         {headings.map(({ id, text, level }) => {
           const href = constructHref(text)
@@ -69,10 +67,10 @@ export function TableOfContents() {
             <li
               key={id}
               className={`flex items-center ${
-                isActiveHeading ? 'font-bold' : 'text-zinc-600'
+                isActiveHeading ? 'font-bold' : 'text-zinc-400'
               } text-sm mt-2 ${
                 !isLevelTwoHeading && 'pl-4'
-              } first:mt-0 transition-all hover:text-zinc-900`}
+              } first:mt-0 transition-all hover:text-zinc-200`}
             >
               <Link href={`#${href}`} onClick={handleLinkClick}>
                 {text}
