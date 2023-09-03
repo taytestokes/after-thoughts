@@ -1,5 +1,5 @@
 import React from 'react'
-import { Posts } from '../components/Posts'
+import { Posts } from './(routes)/blog/_components/Posts'
 import { getPostSlugs, getPosts } from '../utils/blog'
 
 async function getPostData() {

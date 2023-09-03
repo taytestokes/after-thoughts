@@ -1,6 +1,8 @@
 import { marked } from 'marked'
 
-import { getPostSlugs, getPostBySlug } from '../../utils/blog'
+import { TableOfContents } from '../_components/TableOfContents'
+
+import { getPostSlugs, getPostBySlug } from '../../../../utils/blog'
 
 /**
  * Generate each static blog post page for each
@@ -35,11 +37,18 @@ export default function PostPage({ params: { slug } }) {
 
   return (
     <article className="container flex flex-col mx-auto px-4 py-8">
-      <h1 className="text-4xl font-extrabold">{postData.title}</h1>
-      <div
-        className="prose prose-invert prose-pre:bg-zinc-900 mt-8 prose-img:rounded-md prose-img:border-4 prose-img:border-zinc-600"
-        dangerouslySetInnerHTML={{ __html: marked(postContent) }}
-      />
+      <div className="lg:p-12 rounded-md text-center">
+        <h1 className="text-3xl font-bold">{postData.title}</h1>
+      </div>
+      <div className="w-full flex mt-8 gap-8">
+        <div className="hidden lg:flex min-w-[250px] max-w-[250px]">
+          <TableOfContents />
+        </div>
+        <div
+          className="w-1/2 flex flex-col flex-1 break-words prose prose-invert prose-pre:bg-zinc-800 prose-img:rounded-md prose-img:border-4 prose-img:border-zinc-600"
+          dangerouslySetInnerHTML={{ __html: marked(postContent) }}
+        />
+      </div>
     </article>
   )
 }
