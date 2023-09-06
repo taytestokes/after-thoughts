@@ -1,10 +1,10 @@
 import React from 'react'
 import { Posts } from './(routes)/blog/_components/Posts'
-import { getPostSlugs, getPosts } from '../utils/blog'
+import { getPostSlugs, getPosts } from './_utils/blog'
 
 async function getPostData() {
   const postSlugs = getPostSlugs()
-  const posts = getPosts(postSlugs)
+  const posts = await getPosts(postSlugs)
 
   // Sorts the posts by publish date going from latest to oldest
   const sortedPostsByAscDate = posts.sort((a, b) => {
