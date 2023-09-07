@@ -22,7 +22,7 @@ First, let's create a new Phoenix project using a mix task and provide the flag 
 
 If you are interested, you can read more about what options are available to pass with this command [here](https://hexdocs.pm/phoenix/Mix.Tasks.Phx.New.html).
 
-```
+```js
 $ mix phx.new --no-assets
 ```
 
@@ -34,7 +34,7 @@ However, before we start building out the frontend, I think it's important to un
 
 Phoenix handles serving static assets by using the Plug.Static plug. This plug is be found inside the Endpoint module that every request that is made to the server goes through.
 
-```
+```js
 ## lib/example_web_app/endpoint.ex
 
 plug Plug.Static,
@@ -70,13 +70,13 @@ Now let's set this folder up as it's own project with npm and get a `package.jso
 
 Inside of the `assets` folder, execute the npm command to initialize the folder as it's own project and pass it the _-y_ flag to accept all of the default configuration for the package.json file that will be created.
 
-```
+```js
 $ npm init -y
 ```
 
 We should now have a `package.json` file inside of the `assets` folder that looks like the following.
 
-```
+```js
 ## assets/package.json
 
 {
@@ -99,7 +99,7 @@ The only thing left to finish initializing our frontend application is to define
 
 Since we are planning on turning this into a React application, we will follow some common React patterns and store all of our application code in a `src` folder that sits next to all of the configuration files. Go ahead and create an `index.js` file that will live in the `src` folder.
 
-```
+```js
 ## assets/src/index.js
 
 console.log("Hello, world!")
@@ -117,13 +117,13 @@ In order for us to start using Webpack and Babel, we need to install the require
 
 Inside of the `assets` directory, go ahead and execute the following command to install the dependencies we need for the Webpack and Babel configurations.
 
-```
+```js
 $ npm install webpack webpack-cli @babel/core @babel/preset-env babel-loader css-loader style-loader url-loader --save-dev
 ```
 
 Before we configure Webpack and Babel, let's do some good samaritan work annd make sure that we ignore pushing the node modules to the cloud. Add the file path to the `node_modules` folder in the `assets` directory to the `.gitignore` that exists at the root of the Phoenix application.
 
-```
+```js
 ## .gitignore
 
 /assets/node_modules
@@ -131,7 +131,7 @@ Before we configure Webpack and Babel, let's do some good samaritan work annd ma
 
 Now let's add a `.babelrc` and add the appropriate Babel presets that we will need to help compile our Javascript.
 
-```
+```js
 ## assets/.babelrc
 
 {
@@ -141,7 +141,7 @@ Now let's add a `.babelrc` and add the appropriate Babel presets that we will ne
 
 Now it's time to add the config file for Webpack.
 
-```
+```js
 ## assets/webpack.config.js
 
 const path = require("path");
@@ -181,7 +181,7 @@ That should be good enough to get us going with creating a simple application. I
 
 Above, we define that the entry point file for the frontend application is that one that we created earlier which is `assets/src/index.js` and bundle which gets created from Webpack will be called `main`.
 
-```
+```js
 entry: {
     main: "./src/index.js",
 },
@@ -191,7 +191,7 @@ Remember earlier how we talked about how Phoenix uses the Plug.Static plug to se
 
 If you look at the Webpack config, you can see that we define that the output of the bundled Javascript for our frontend application should be dumped into that directory.
 
-```
+```js
 output: {
     path: path.resolve(__dirname, "../priv/static/assets/js"),
 },
@@ -209,7 +209,7 @@ The Phoenix Endpoint can be configured with a set of watchers that will run othe
 
 You can find the configuration for the Endpoint for the development environment in the `config/dev.ex` file.
 
-```
+```js
 ## config/dev.ex
 
 config :example_app, ExampleAppWeb.Endpoint,
@@ -223,7 +223,7 @@ config :example_app, ExampleAppWeb.Endpoint,
 
 We can configure the `watchers` option to execute a Node process to watch Webpack for bundling our frontend portion of the application when we run the `mix phx.server` command to start our Phoenix server.
 
-```
+```js
 watchers: [
     node: [
       "node_modules/webpack/bin/webpack.js",
@@ -241,7 +241,7 @@ If you're not familiar with the `watch` option for Webpack, you find out more ab
 
 Now when we start up our Phoenix application using `mix phx.server`, we can validate Webpack is also being executed by a the watcher we created by checking the terminal logs and seeing a message that declares Webpack was succesfully compiled.
 
-```
+```js
 Generated example_app app
 [info] Running ExampleAppWeb.Endpoint with cowboy 2.9.0 at 127.0.0.1:4000 (http)
 [info] Access ExampleAppWeb.Endpoint at http://localhost:4000
@@ -262,7 +262,7 @@ We will inject that `script` tag into the main layout of the application that wr
 
 At the end of the `body` tag in that layout file, go ahead and add this script tag.
 
-```
+```js
 ## lib/example_app_web/templates/layout/root.html.heex
 
 <body>
@@ -284,13 +284,13 @@ Now that the bundle created by Webpack is being delivered to the client, let's s
 
 Inside of the `assets` folder, we need to install a few more dependencies to use React.
 
-```
+```js
 $ npm install react react-dom
 ```
 
 We also want to get the Babel React presets to compile the React code correctly.
 
-```
+```js
 $ npm install @babel/preset-react --save-dev
 ```
 
@@ -298,7 +298,7 @@ With those dependencies now installed, we start setting up the React application
 
 Let's add the new Babel preset to the `assets/.babelrc` file.
 
-```
+```js
 ## assets/.babelrc
 
 {
@@ -308,7 +308,7 @@ Let's add the new Babel preset to the `assets/.babelrc` file.
 
 Now let's revisit the `assets/src/index.js` file and get it to render our React application.
 
-```
+```js
 ## assets/src/index.js
 
 import React from "react";
@@ -323,7 +323,7 @@ Since the `lib/example_app_web/templates/page/index.html.heex` tempalte file is 
 
 If you are unsure as of why this is the template file that will be rendered at that route, we can check out the Router module of the Phoenix application.
 
-```
+```js
 ## lib/example_app_web/router.ex
 
 scope "/", ExampleAppWeb do
@@ -337,7 +337,7 @@ For the scope of the base route `/`, we define that `get` request made to the ba
 
 Now let's add the element to the HTML template to use to render our React application.
 
-```
+```js
 ## lib/example_app_web/templates/page/index.html.heex
 
 <div id="root" />
@@ -353,13 +353,13 @@ Let's start expanding on the React application and build it out a little more to
 
 We need to install `react-router-dom` as another dependency for our application. In the `assets` folder, run the npm command to install it.
 
-```
+```js
 $ npm install react-router-dom
 ```
 
 Now once that's installed, let's create a few more components for our React application to render per route. We'll create these components in a new folder called `components`. These will be some simple components that render what page they would reflect in our application.
 
-```
+```js
 ## assets/src/components/Home.js
 
 import React from "react";
@@ -369,7 +369,7 @@ export const Home = () => {
 };
 ```
 
-```
+```js
 ## assets/src/components/Dashboard.js
 
 import React from "react";
@@ -381,7 +381,7 @@ export const Dashboard = () => {
 
 With those created, let's hop back to the entry point of our frontend application and setup the router and use those components.
 
-```
+```js
 ## assets/src/index
 
 import React from "react";
@@ -423,7 +423,7 @@ In the Phoenix Router, we can use a wildcard pattern in the route definition to 
 
 In our case, we will configure Phoenix so that all requests made to the server that get processed through the `/` scope, will be sent the Page Controllers index action by setting the route path to `/*path`.
 
-```
+```js
 ## lib/example_app_web/router.ex
 
 scope "/", ExampleAppWeb do
@@ -449,7 +449,7 @@ If you're not familiar with the lifecycle of a Phoenix request, then you should 
 
 The first thing that we need to is modify the Phoenix routes to open a new scope specifically for API requests.
 
-```
+```js
 ## lib/example_app_web/router.ex
 
 scope "/api", ExampleAppWeb.Api do
@@ -473,7 +473,7 @@ In the scope, we set up a basic route defined as `/data` that will handle incomi
 
 Let's get that action and the controller created as well as the associated view.
 
-```
+```js
 ## lib/example_app_web/controllers/api/data_controller.ex
 
 defmodule ExampleAppWeb.Api.DataController do
@@ -500,7 +500,7 @@ defmodule ExampleAppWeb.Api.DataController do
 end
 ```
 
-```
+```js
 ## lib/example_app_web/views/api/data_view.ex
 
 defmodule ExampleAppWeb.Api.DataView do
@@ -523,7 +523,7 @@ With the controller and the view connfigured to send a response of data, we can 
 
 We will make this request in the `Dashboard` component so when the component mounts to the browser, it will make that network request for the data and display it in the UI.
 
-```
+```js
 ## assets/src/components/Dashboard.js
 
 import React from "react";
