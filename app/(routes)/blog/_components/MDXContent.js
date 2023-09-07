@@ -1,7 +1,16 @@
 import React from 'react'
 
-// Code highlight styles
+/**
+ * Highlight styles from highlight.js for styling
+ * the code snippits in the MDX content.
+ */
 import 'highlight.js/styles/github-dark.css'
+
+/**
+ * Components is a map of components that we will pass to our
+ * MDX compiler to allow us to use components in the MDX file.
+ */
+export const components = {}
 
 export function MDXContent({ content }) {
   return (
