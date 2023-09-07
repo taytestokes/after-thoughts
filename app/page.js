@@ -1,6 +1,6 @@
 import React from 'react'
 import { Posts } from './(routes)/blog/_components/Posts'
-import { getPostSlugs, getPosts } from './_utils/blog'
+import { getPostSlugs, getPosts } from './_lib/mdx'
 
 async function getPostData() {
   const postSlugs = getPostSlugs()
