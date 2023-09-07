@@ -1,7 +1,7 @@
 import { TableOfContents } from '../_components/TableOfContents'
 import { MDXContent } from '../_components/MDXContent'
 
-import { getPostSlugs, getPostBySlug } from '../../../_utils/blog'
+import { getPostSlugs, getPostBySlug } from '../../../_lib/mdx'
 
 /**
  * Generate each static blog post page for each

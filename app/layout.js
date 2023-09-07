@@ -53,8 +53,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className="bg-zinc-900 text-zinc-200">
+    <html lang="en" className="bg-white text-zinc-900">
+      <body>
         <div className="w-screen min-h-screen flex flex-col">
           <header className="container flex items-center mx-auto py-8 px-4">
             <Link href="/">

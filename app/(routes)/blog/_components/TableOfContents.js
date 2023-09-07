@@ -57,7 +57,8 @@ export function TableOfContents() {
 
   return (
     <nav className="flex flex-col self-start sticky top-8">
-      <ul>
+      <p className="text-lg font-bold">Table Of Contents</p>
+      <ul className="mt-4">
         {headings.map(({ id, text, level }) => {
           const href = constructHref(text)
           const isLevelTwoHeading = level === 2
@@ -66,11 +67,9 @@ export function TableOfContents() {
           return (
             <li
               key={id}
-              className={`flex items-center ${
-                isActiveHeading ? 'font-bold' : 'text-zinc-400'
-              } text-sm mt-2 ${
+              className={`flex items-center ${isActiveHeading && 'font-bold'} text-sm mt-2 ${
                 !isLevelTwoHeading && 'pl-4'
-              } first:mt-0 transition-all hover:text-zinc-200`}
+              } first:mt-0 transition-all hover:font-bold`}
             >
               <Link href={`#${href}`} onClick={handleLinkClick}>
                 {text}
