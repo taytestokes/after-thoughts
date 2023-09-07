@@ -4,6 +4,7 @@ import matter from 'gray-matter'
 
 import { compileMDX } from 'next-mdx-remote/rsc'
 import rehypeSlug from 'rehype-slug'
+import rehypeHighlight from 'rehype-highlight'
 
 /**
  * Get a collection of all blog post file
@@ -38,7 +39,7 @@ export const getPostBySlug = async (slug) => {
     options: {
       parseFrontmatter: true,
       mdxOptions: {
-        rehypePlugins: [rehypeSlug],
+        rehypePlugins: [rehypeSlug, rehypeHighlight],
       },
     },
   })

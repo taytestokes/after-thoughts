@@ -1,4 +1,5 @@
 import { TableOfContents } from '../_components/TableOfContents'
+import { MDXContent } from '../_components/MDXContent'
 
 import { getPostSlugs, getPostBySlug } from '../../../_utils/blog'
 
@@ -42,9 +43,7 @@ export default async function PostPage({ params: { slug } }) {
         <div className="hidden lg:flex min-w-[250px] max-w-[250px]">
           <TableOfContents />
         </div>
-        <section className="w-1/2 flex flex-col flex-1 break-words prose prose-invert prose-pre:bg-zinc-800 prose-img:rounded-md prose-img:border-4 prose-img:border-zinc-600">
-          {content}
-        </section>
+        <MDXContent content={content} />
       </div>
     </article>
   )

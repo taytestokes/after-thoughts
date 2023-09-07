@@ -10,27 +10,27 @@ In Elixir, there's a concept that's known as _pattern matching_ and it's one of 
 
 In most standard programming languages the = is known as the assignment operator. For example, in Javascript when we want to store a value to a specific namespace in memory that can be referenced, we will create a variable and use the assignment operator to assign a value to that variable.
 
-```
+```js
 const foo = 'bar'
 ```
 
 Now when reference the variable foo within our code, we will retrieve the string value of bar.
 
-```
+```js
 console.log(foo)
 
-'bar'
+// bar
 ```
 
 When we do something very in similar in Elixir, it might seem like the same assignment operation is happening.
 
-```
-foo = "bar"
+```js
+foo = 'bar'
 ```
 
 It's easy to look at the example above and think "Oh, it looks like we are assigning the string value of bar to the variable foo" which technically it does, but that's only if the variable is the operand on the left side of the = operator. What happens if we were to swap the operands?
 
-```
+```js
 "bar" = foo
 ```
 
@@ -46,7 +46,7 @@ Elixir will look to both sides of the operator and check to see if value of the 
 
 If both of the values match, it will return the value. If they don't, it will return a match error.
 
-```
+```js
 foo = "bar"
 
 # "bar"
@@ -68,7 +68,7 @@ Maps in Elixir are pretty similar to what object literals are in Javascript. The
 
 We can pattern match on maps similar to how we were able to on strings.
 
-```
+```js
 user = %{first: "tayte", last: "stokes"}
 
 %{first: "tayte", last: "stokes"} = user
@@ -82,7 +82,7 @@ Destructering is a mechanism we can utlize to capture values from other pieces o
 
 Let's say we want to use the user map that was created in the above example, but we want to extract the first and last name and store the values into their own variables.
 
-```
+```js
 user = %{first: "tayte", last: "stokes"}
 
 %{first: first_name, last: last_name} = user
@@ -106,7 +106,7 @@ We are able to validate that the two maps match in their key-value pair structur
 
 If the structure of the map for the key-value pairs didn't match, we would encounter a match error.
 
-```
+```js
 user = %{first: "tayte", last: "stokes"}
 
 %{first_name: first_name, last_name: last_name} = user
@@ -120,7 +120,7 @@ There are also a few gotchas when pattern matching on map data types.
 
 We can pattern match an empty map to another map that contains key-value fields and it will pass the assertion.
 
-```
+```js
 user = %{first: "tayte", last: "stokes"}
 
 %{} = user
@@ -132,7 +132,7 @@ I personally can't think of too many use cases for this other than wanting to va
 
 Another gotcha is that we don't need to provide every key-value pair when pattern matching map data types.
 
-```
+```js
 user = %{first: "tayte", last: "stokes"}
 
 %{first: "tayte"} = user
@@ -158,7 +158,7 @@ We can execute pattern matching on lists pretty similar to how we've seen it don
 
 If we were to try and pattern match an empty list to a list that contains mutliple values, we would run into a match error.
 
-```
+```js
 [] = [1,2,3,4,5]
 
 ** (MatchError) no match of right hand side value: [1, 2, 3, 4, 5]
@@ -170,7 +170,7 @@ This is because the position of the values inside a list matter.
 
 If those values did match, we would see a successful pattern match assertion.
 
-```
+```js
 [1, 2, 3, 4, 5] = [1, 2, 3, 4, 5]
 
 [1, 2, 3, 4, 5]
@@ -180,7 +180,7 @@ If we only wanted to match for the first and last values inside of the list, we 
 
 Using an underscore to denote that we don't care about a certain value is a pretty common practice in software development.
 
-```
+```js
 [1, _, _, _, 5] = [1, 2, 3, 4, 5]
 
 [1, 2, 3, 4, 5]
@@ -190,7 +190,7 @@ We can also destructure values and assign them to new variables as well.
 
 We just need to make sure that the variable is in the same position as the value we want to capture and is on the left side of the match operator.
 
-```
+```js
 [1, a, b, c, 5] = [1, 2, 3, 4, 5]
 
 IO.inspect(a)
@@ -210,7 +210,7 @@ Another approach we can take to destructering values, is to take the head and th
 
 The first value in a list is often referred to as the head and the remaining values are referred to as the tail of the list.
 
-```
+```js
 [head | tail] = [1, 2, 3, 4, 5]
 
 IO.inspect(head)
@@ -234,7 +234,7 @@ I believe tuples are one of the easiest data types to pattern match.
 
 I think that by now with what we have discussed, showing a simple example of pattern matching and destructering a tuple is enough to demonstrate how it works.
 
-```
+```js
 tuple = {:name, "tayte", [1,2,3]}
 
 {:name, "tayte", [1,2,3]} = tuple
@@ -254,7 +254,7 @@ We need to make sure we match the structure of the tuple just like a list and th
 
 However, just like lists, we can't perform a pattern match on an empty tuple to another tuple that contains data.
 
-```
+```js
 tuple = {:name, "tayte", [1,2,3]}
 
 {} = tuple
@@ -276,7 +276,7 @@ In other languages such as Javascript, we use specific keywords when defining a 
 
 In Javascript for example, we can define a new variable using the const keyword to indicate that the variable should never be reassigned and will throw errors when that reassignment tries to happen.
 
-```
+```js
 const name = "tayte"
 
 name = "stokes"
@@ -288,7 +288,7 @@ So, how do we do that in Elixir? This is where the pin operator comes into play.
 
 We can indicate that variables should not be reassigned by prepending a caret symbol to an existing variable when we reference it.
 
-```
+```js
 name = "tayte"
 
 ^name = "stokes"

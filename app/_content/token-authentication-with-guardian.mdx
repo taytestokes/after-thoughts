@@ -20,25 +20,25 @@ First things first, we will scaffold a new Phoenix API that is backed by a datab
 
 We'll do this by generating a new Phoenix project without the assets folder and html views.
 
-```
+```js
 $ mix phx.new auth_example --no-assets --no-html
 ```
 
 After the new Phoenix application has been generated, we need to create our database.
 
-```
+```js
 $ mix ecto.create
 ```
 
 Now we will generate a migration to create a simple table for our users in the database.
 
-```
+```js
 $ mix ecto.gen.migration add_users_table
 ```
 
 We need to setup that migration to add the columns and their values that we want in our users table.
 
-```
+```js
 ## priv/repo/migrations/{migration_id}_add_users_table.exs
 
 defmodule AuthExample.Repo.Migrations.AddUsersTable do
@@ -63,7 +63,7 @@ It's important to note that we will be storing an encrypted hash of the user pas
 
 Now with the migration setup, let's execute that migration file to make the changes to our database and create the user table.
 
-```
+```js
 $ mix ecto.migrate
 ```
 
@@ -75,7 +75,7 @@ The schema is basically a blueprint of a resource that is used to create a struc
 
 The changeset function is used to create an ecto changeset of the user struct that will be used when our transaction to the database is made. It allows us cast, filter, validate and define constraints when manipulating a struct.
 
-```
+```js
 ## lib/auth_example/users/user
 
 defmodule AuthExample.Users.User do
@@ -109,7 +109,7 @@ There's many ways to go about encrypting a password, but we will use a library c
 
 Let's get that package added as a dependency to our project.
 
-```
+```js
 ## mix.exs
 
 defp deps do
@@ -121,13 +121,13 @@ end
 
 Now we need to install the newly added Argon2 package.
 
-```
+```js
 $ mix deps.get
 ```
 
 We should now be ready to use the hashing functionality from Argon2 in our user schema module.
 
-```
+```js
 ## lib/auth_example/users/user
 
 defmodule AuthExample.Users.User do
@@ -165,7 +165,7 @@ As you can see, we created a private function in our module to handle hashing th
 
 Our next step is to create the context module. This module will be used as the public API layer to interact with our user resources.
 
-```
+```js
 ## lib/auth_example/users.ex
 
 defmodule AuthExample.Users do
@@ -205,7 +205,7 @@ Our Phoenix API is now backed by a database that consists of a users table and i
 
 We first need to add Guardian as a dependency to our application.
 
-```
+```js
 ## mix.exs
 
 defp deps do
@@ -217,7 +217,7 @@ end
 
 And now we just need to install the dependencies.
 
-```
+```js
 $ mix deps.get
 ```
 
@@ -231,7 +231,7 @@ This module will encapsulate the configuration and behavior that we specifify fo
 
 There are a few modules that we will create to implement Guardian in our app, so I created an auth directory inside of the web directory to house these modules.
 
-```
+```js
 ## lib/auth_example_web/auth/guardian.ex
 
 defmodule AuthExampleWeb.Auth.Guardian do
@@ -259,7 +259,7 @@ The resource_from_claims/2 is the inverse of subject_for_token/2. We will get th
 
 Now with the implementation module created, we need to configure our application to use it.
 
-```
+```js
 ## config/config.exs
 
 config :auth_example, AuthExampleWeb.Auth.Guardian,
@@ -269,13 +269,13 @@ secret_key: ""
 
 Notice how the secret_key field is empty. We need to provide the secret that will be used when we encode a new token. This secret can be any string, but it's recommended that we use Guardian to generate a secret for us.
 
-```
+```js
 $ mix guardian.gen.secret
 ```
 
 That mix task should print out a secret the console that we can use. Go ahead and copy and paste that into the configuration.
 
-```
+```js
 ## config/config.exs
 
 config :auth_example, AuthExampleWeb.Auth.Guardian,
@@ -293,7 +293,7 @@ This pipeline will watch over the authorization header that is attached to the r
 
 We will create this pipeline inside that auth directory that we created earlier.
 
-```
+```js
 ## lib/auth_example_web/auth/pipeline.ex
 
 defmodule AuthExampleWeb.Auth.Pipeline do
@@ -317,7 +317,7 @@ Notice how we are using a module that we have not yet defined, which is the Erro
 
 Let's go ahead an create that inside of the auth directory we created earlier.
 
-```
+```js
 ## lib/auth_example_web/auth/error_handler.ex
 
 defmodule AuthExampleWeb.Auth.ErrorHandler do
@@ -345,7 +345,7 @@ We will build out a controller that will handle requests that are related toward
 
 We'll start by building out the register action for the authentication controller to handle new user registration.
 
-```
+```js
 ## lib/auth_example_web/controllers/auth_controller.ex
 
 defmodule AuthExampleWeb.AuthController do
@@ -369,7 +369,7 @@ For the purpose of this example, the register action is pretty simple. It will r
 
 We currently don't have the json view setup, so let's create that.
 
-```
+```js
 ## lib/auth_example_web/views/auth_view.ex
 
 defmodule AuthExampleWeb.AuthView do
@@ -385,7 +385,7 @@ We should now successfully return a token to the client when a request is made t
 
 If we want this register route to be reachable, we need to configure a route for it. Let's go ahead and setup our router.
 
-```
+```js
 ## lib/auth_example/router.ex
 
 defmodule AuthExampleWeb.Router do
@@ -407,7 +407,7 @@ Our API can now start receiving requests to register a new user and receive a to
 
 With user registration implemented, we now want a way to sign users in. Let's create another action in our auth controller to handle that.
 
-```
+```js
 ## lib/auth_example_web/controllers/auth_controller.ex
 
 defmodule AuthExampleWeb.AuthController do
@@ -441,7 +441,7 @@ With the new sign_in action that we just created, we will query the database for
 
 However, we currently don't have the authenticate_user function, so let's go ahead and create that. Since this is related to a managing a user resource, the context module for our users would be a great place to put this functionality.
 
-```
+```js
 defmodule AuthExample.Users do
   import Ecto.Query
   alias AuthExample.Repo
@@ -466,7 +466,7 @@ Inside of our context module, we alias our Guardian implementation module to eas
 
 Now that the sign_in action and the logic to authenticate a user has been created, we now need to add a route to allow our client to make a request to sign in.
 
-```
+```js
 ## lib/auth_example/router.ex
 
 defmodule AuthExampleWeb.Router do
@@ -491,7 +491,7 @@ With that in place, our API is now ready to handle receiving requests to create 
 
 Remember the pipeline that we created with the VerifyHeaders and EnsureAuthenticated plugs from Guardian? Let's go ahead and now put that to use in our router.
 
-```
+```js
 ## lib/auth_example_web/router.ex
 
 defmodule AuthExampleWeb.Router do
@@ -528,7 +528,7 @@ We currently don't have any endpoints declared in the private /api scope, so let
 
 This new endpoint will allow authenticated requests to get a user resource by the id.
 
-```
+```js
 ## lib/auth_example_web/router.ex
 
 defmodule AuthExampleWeb.Router do
@@ -546,7 +546,7 @@ end
 
 We just added the /users/:id route in our private /api scope that uses the auth pipeline to ensure a request to authenticated. This new route uses a new users controller to handle the request. This currently doesn't exist, so let's create it.
 
-```
+```js
 ## lib/auth_example_web/controllers/users_controller.ex
 
 defmodule AuthExampleWeb.UsersController do
@@ -565,7 +565,7 @@ Our users controller is now set up with a single action. The user action will ta
 
 The view has not been setup, so let's create that.
 
-```
+```js
 ## lib/auth_example_web/views/users_view.ex
 
 defmodule AuthExampleWeb.UsersView do
@@ -581,7 +581,7 @@ Now with the view setup, we simply send the client back a response that consists
 
 However, there is just one problem with this. If we make that request right now for a user, our application will actually error out and we will receive an error message that looks like the following.
 
-```
+```js
 ** (Protocol.UndefinedError) protocol Jason.Encoder not implemented for %AuthExample.Users.User{}
 ```
 
@@ -591,7 +591,7 @@ Since we own how these structs are defined and created, we can actually derive t
 
 In our user schema file, we can use the @derive module attribute to list the protocols we want to derive from.
 
-```
+```js
 ## lib/auth_example/users/user.ex
 
 defmodule AuthExample.Users.User do
@@ -616,7 +616,7 @@ If you are interested, you can find out more about deriving protocols [here](htt
 
 Now when we make an authenticated request that contains a valid token for a user, we will receive a response that contains the user's id and username.
 
-```
+```js
 {
   "data": {
     "id": 1,
