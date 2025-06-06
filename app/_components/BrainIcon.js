@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const BrainIcon = ({ className = '', size = 20 }) => {
+export const BrainIcon = ({ className = '', size = 16 }) => {
   return (
     <svg
       className={className}

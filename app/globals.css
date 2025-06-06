@@ -1,3 +1,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@view-transition {
+  navigation: auto;
+}
+
+@property --gradient-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+/* NOTE: Keeping these styles for later use to apply some fun gradient rotating borders */
+@layer utilities {
+  .gradient-border-wrapper {
+    @apply relative;
+  }
+
+  .gradient-border {
+    --gradient-angle: 0deg;
+
+    background-image: conic-gradient(
+      from var(--gradient-angle),
+      transparent 70%,
+      oklch(from #525252 l c h),
+      transparent
+    );
+
+    @apply content-[''] box-content absolute w-full h-full top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] z-[-1] p-[1px] blur-sm rounded-md animate-gradient-angle-rotate;
+  }
+}

@@ -16,7 +16,7 @@ export const metadata = {
     icon: '/after-thoughts-block-logo.jpg',
     shortcut: '/after-thoughts-block-logo.jpg',
   },
-  keywords: ['JavaScript', 'React', 'Elixir', 'Phoenix'],
+  keywords: ['JavaScript', 'React', 'Elixir', 'Phoenix', 'Software Development', 'Web Development'],
   viewport: {
     width: 'device-width',
     initialScale: 1,
@@ -53,19 +53,26 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="bg-white text-zinc-900">
-      <body>
-        <div className="w-screen min-h-screen flex flex-col">
-          <header className="container flex items-center mx-auto py-8 px-4">
-            <Link href="/">
-              <BrainIcon size={45} />
-            </Link>
-          </header>
+    <html lang="en" className="bg-neutral-900 text-neutral-50">
+      <body className="flex flex-col w-screen min-h-screen max-w-[600px] mx-auto px-4">
+        <header className="flex items-center sm:justify-center pt-24 pb-16">
+          <Link className="transition-colors duration-100 ease-in hover:text-neutral-400" href="/">
+            <BrainIcon size={50} />
+          </Link>
+        </header>
 
-          <main className="flex flex-col grow">
-            {typeof children === 'function' ? children() : children}
-          </main>
-        </div>
+        <main className="flex flex-col grow pb-16">{children}</main>
+
+        <footer className="flex items-center justify-between pb-8 text-xs text-neutral-200">
+          <p>&copy; After Thoughts {new Date().getFullYear()}</p>
+          <a
+            href="https://github.com/taytestokes/after-thoughts"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            View Source
+          </a>
+        </footer>
       </body>
     </html>
   )
