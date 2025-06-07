@@ -1,5 +1,11 @@
-import { TableOfContents } from '../_components/TableOfContents'
-import { MDXContent } from '../_components/MDXContent'
+/**
+ * Highlight styles from highlight.js for styling
+ * the code snippits in the MDX content.
+ */
+import 'highlight.js/styles/github-dark.css'
+
+import Image from 'next/image'
+import { format } from 'date-fns'
 
 import { getPostSlugs, getPostBySlug } from '../../../_lib/mdx'
 
@@ -33,18 +39,33 @@ async function getPostData(slug) {
 
 export default async function PostPage({ params: { slug } }) {
   const { content, data } = await getPostData(slug)
+  const publishedDate = format(new Date(data?.publishedAt), 'MMMM do, yyyy')
 
   return (
-    <article className="container flex flex-col mx-auto px-4 py-8">
-      <div className="lg:p-12 rounded-md text-center">
-        <h1 className="text-3xl font-bold">{data?.title}</h1>
-      </div>
-      <div className="w-full flex mt-8 gap-8">
-        <div className="hidden lg:flex min-w-[250px] max-w-[250px]">
-          <TableOfContents />
+    <article>
+      <header>
+        <h1 className="text-2xl font-semibold">{data?.title}</h1>
+      </header>
+
+      <div className="relative flex w-full h-[40px] items-center py-2 bg-neutral-800 border border-neutral-700 rounded-md my-16">
+        <Image
+          aria-hidden
+          className="ml-[-5px] rounded-full border border-neutral-700"
+          src={'/headshot.jpeg'}
+          alt={data?.author}
+          width={75}
+          height={75}
+        />
+
+        <div className="flex grow items-center justify-between px-2">
+          <p className="text-xs font-medium text-neutral-400">{data?.author}</p>
+          <p className="text-xs font-medium text-neutral-400">{publishedDate}</p>
         </div>
-        <MDXContent content={content} />
       </div>
+
+      <section className="flex flex-col flex-1 break-words text-md prose prose-p:text-neutral-200 prose-h2:text-neutral-50 prose-h3:text-neutral-50  prose-pre:p-0 prose-img:rounded-md prose-a:text-neutral-50 prose-li:text-neutral-50 prose-code:text-neutral-50">
+        {content}
+      </section>
     </article>
   )
 }
