@@ -43,7 +43,7 @@ export default async function PostPage({ params: { slug } }) {
 
   return (
     <article>
-      <header>
+      <header className="text-center">
         <h1 className="text-2xl font-semibold">{data?.title}</h1>
       </header>
 
